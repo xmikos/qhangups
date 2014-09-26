@@ -8,13 +8,13 @@ import hangups
 from hangups.notify import Notifier
 from quamash import QEventLoop
 
+from qhangups.version import __version__
 from qhangups.settings import QHangupsSettings
 from qhangups.conversations import QHangupsConversations
 from qhangups.conversationslist import QHangupsConversationsList
 
 
 # Basic settings
-__version__ = '1.0'
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 # Prepare Qt translators

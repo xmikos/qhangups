@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
-from qhangups.qhangups import __version__
+from qhangups.version import __version__
 
 setup(name="QHangups",
       version=__version__,
