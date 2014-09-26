@@ -15,4 +15,4 @@ setup(name="QHangups",
       data_files=[("share/applications", ["qhangups.desktop"]),
                   ("share/pixmaps", ["qhangups.png"])],
       scripts=["scripts/qhangups"],
-      requires=["hangups", "appdirs", "asyncio", "PyQt4"])
+      requires=["hangups", "appdirs", "asyncio", "PyQt4", "Quamash"])
