@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=QHangups
+GenericName=Google Hangouts client
+Comment=Alternative client for Google Hangouts written in PyQt
+Exec=qhangups
+Icon=qhangups
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Qt;Network;InstantMessaging;
