@@ -25,12 +25,12 @@ try logging in through a browser first.
 Help
 ----
 
-usage: qhangups [-h] [-d] [--log LOG] [--cookies COOKIES]
-
-optional arguments:
-  -h, --help         show this help message and exit
-  -d, --debug        log detailed debugging messages (default: False)
-  --log LOG          log file path (default:
-                     ~/.local/share/QHangups/hangups.log)
-  --cookies COOKIES  cookie storage path (default:
-                     ~/.local/share/QHangups/cookies.json)
+    usage: qhangups [-h] [-d] [--log LOG] [--cookies COOKIES]
+    
+    optional arguments:
+      -h, --help         show this help message and exit
+      -d, --debug        log detailed debugging messages (default: False)
+      --log LOG          log file path (default:
+                         ~/.local/share/QHangups/hangups.log)
+      --cookies COOKIES  cookie storage path (default:
+                         ~/.local/share/QHangups/cookies.json)
