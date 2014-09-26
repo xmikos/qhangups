@@ -8,7 +8,7 @@ url="https://github.com/xmikos/qhangups"
 license=('GPL3')
 depends=('hangups-git' 'python-pyqt4' 'python-quamash' 'python-appdirs')
 source=(https://github.com/xmikos/qhangups/archive/v$pkgver.tar.gz)
-md5sums=('f5df1f891cb200d91dfb82f159f2ae89')
+md5sums=('19a0c96318fe3355b6e0ffa0f48cd3b0')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
