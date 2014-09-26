@@ -5,7 +5,7 @@ from PyQt4 import QtCore, QtGui
 
 import appdirs
 import hangups
-from hangups.notify import Notifier
+from hangups.ui.notify import Notifier
 from quamash import QEventLoop
 
 from qhangups.version import __version__

@@ -3,7 +3,7 @@ import datetime, asyncio
 from PyQt4 import QtCore, QtGui
 
 import hangups
-from hangups.utils import get_conv_name
+from hangups.ui.utils import get_conv_name
 
 from qhangups.utils import text_to_segments, message_to_html
 from qhangups.ui_qhangupsconversationwidget import Ui_QHangupsConversationWidget

@@ -1,7 +1,7 @@
 from PyQt4 import QtCore, QtGui
 
 import hangups
-from hangups.utils import get_conv_name
+from hangups.ui.utils import get_conv_name
 
 from qhangups.ui_qhangupsconversationslist import Ui_QHangupsConversationsList
 
