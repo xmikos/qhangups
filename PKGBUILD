@@ -12,12 +12,12 @@ md5sums=('2e9a2a211366a9463c916b4870b6042f')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
-  python2 setup.py build
+  python setup.py build
 }
 
 package() {
   cd "$srcdir/$pkgname-$pkgver"
-  python2 setup.py install --root="$pkgdir"
+  python setup.py install --root="$pkgdir"
 }
 
 # vim:set ts=2 sw=2 et:
