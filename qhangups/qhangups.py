@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, logging, argparse, asyncio
+import sys, os, logging, argparse, asyncio, signal
 from PyQt4 import QtCore, QtGui
 
 import appdirs
@@ -30,7 +30,6 @@ class QHangupsMainWidget(QtGui.QWidget):
 
         self.cookies_path = cookies_path
         self.hangups_running = False
-        self.hangups_future = None
         self.client = None
 
         self.create_actions()
@@ -51,6 +50,15 @@ class QHangupsMainWidget(QtGui.QWidget):
         self.icon_doubleclick_timer = QtCore.QTimer(self)
         self.icon_doubleclick_timer.setSingleShot(True)
         self.icon_doubleclick_timer.timeout.connect(self.icon_doubleclick_timeout)
+
+        # Handle signals on Unix
+        # (add_signal_handler is not implemented on Windows)
+        try:
+            loop = asyncio.get_event_loop()
+            for signum in (signal.SIGINT, signal.SIGTERM):
+                loop.add_signal_handler(signum, lambda: self.quit(force=True))
+        except NotImplementedError:
+            pass
 
     def create_actions(self):
         """Create actions and connect relevant signals"""
@@ -150,15 +158,23 @@ class QHangupsMainWidget(QtGui.QWidget):
             self.client.on_connect.add_observer(self.on_connect)
 
             # Run Hangups event loop
-            self.hangups_future = asyncio.async(self.client.connect())
+            asyncio.async(self.client.connect())
             self.hangups_running = True
             self.update_status()
 
     def hangups_stop(self):
         """Disconnect from Hangouts"""
-        # TODO: future.cancel() doesn't work, Hangups client loop is still running after cancellation!
-        self.hangups_future.cancel()
-        self.hangups_future = None
+        asyncio.async(
+            self.client.disconnect()
+        ).add_done_callback(lambda future: future.result())
+
+        self.conv_list = None
+        self.user_list = None
+        self.notifier = None
+
+        self.conversations_dialog = None
+        self.messages_dialog = None
+
         self.hangups_running = False
         self.client = None
         self.update_status()
@@ -215,19 +231,21 @@ class QHangupsMainWidget(QtGui.QWidget):
         elif self.conversations_dialog:
             self.conversations_dialog.show()
 
-    def quit(self):
+    def quit(self, force=False):
         """Quit QHangups"""
         if self.hangups_running:
-            reply = QtGui.QMessageBox.question(self, self.tr("QHangups - Quit"),
-                                               self.tr("You are still connected to Google Hangouts. "
-                                                       "Do you really want to quit QHangups?"),
-                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
-                self.hangups_stop()
-            else:
-                return
+            if not force:
+                reply = QtGui.QMessageBox.question(self, self.tr("QHangups - Quit"),
+                                                   self.tr("You are still connected to Google Hangouts. "
+                                                           "Do you really want to quit QHangups?"),
+                                                   QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                if reply != QtGui.QMessageBox.Yes:
+                    return
+            self.hangups_stop()
 
-        QtGui.qApp.quit()
+        loop = asyncio.get_event_loop()
+        loop.stop()
+        # QtGui.qApp.quit()
 
     def changeEvent(self, event):
         """Handle LanguageChange event"""
