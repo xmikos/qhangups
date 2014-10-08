@@ -158,7 +158,9 @@ class QHangupsMainWidget(QtGui.QWidget):
             self.client.on_connect.add_observer(self.on_connect)
 
             # Run Hangups event loop
-            asyncio.async(self.client.connect())
+            asyncio.async(
+                self.client.connect()
+            ).add_done_callback(lambda future: future.result())
             self.hangups_running = True
             self.update_status()
 
