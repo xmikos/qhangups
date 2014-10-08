@@ -3,12 +3,12 @@
 <context>
     <name>QHangupsConversationWidget</name>
     <message>
-        <location filename="conversationwidget.py" line="148"/>
+        <location filename="conversationwidget.py" line="183"/>
         <source>QHangups - Warning</source>
         <translation>QHangups - Varování</translation>
     </message>
     <message>
-        <location filename="conversationwidget.py" line="148"/>
+        <location filename="conversationwidget.py" line="183"/>
         <source>Failed to send message!</source>
         <translation>Zprávu se nepodařilo odeslat!</translation>
     </message>
@@ -140,24 +140,29 @@
 <context>
     <name>QHangupsSettings</name>
     <message>
-        <location filename="ui_qhangupssettings.py" line="56"/>
+        <location filename="ui_qhangupssettings.py" line="65"/>
         <source>QHangups - Settings</source>
         <translation>QHangups - Nastavení</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="59"/>
+        <location filename="ui_qhangupssettings.py" line="69"/>
         <source>Language:</source>
         <translation>Jazyk:</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="57"/>
+        <location filename="ui_qhangupssettings.py" line="66"/>
         <source>Send client active notifications</source>
         <translation>Odesílat notifikace o aktivitě klienta</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="58"/>
+        <location filename="ui_qhangupssettings.py" line="67"/>
         <source>Send read state notifications</source>
         <translation>Odesílat notifikace o přečtení zpráv</translation>
+    </message>
+    <message>
+        <location filename="ui_qhangupssettings.py" line="68"/>
+        <source>Press Enter to send message (default is Ctrl+Enter)</source>
+        <translation>Tlačítko Enter odešle zprávu (výchozí zkratka je Ctrl+Enter)</translation>
     </message>
 </context>
 </TS>

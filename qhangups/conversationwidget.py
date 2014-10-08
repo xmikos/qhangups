@@ -80,11 +80,26 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         self.conv.on_event.add_observer(self.on_event)
         self.conv.on_watermark_notification.add_observer(self.on_watermark_notification)
 
+        self.messageTextEdit.textChanged.connect(self.on_text_changed)
         self.sendButton.clicked.connect(self.on_send_clicked)
+
+        settings = QtCore.QSettings()
+        self.enter_send_message = settings.value("enter_send_message", False, type=bool)
+
+        # Install ourselves as event filter so we can catch Enter key press (see eventFilter method)
+        self.messageTextEdit.installEventFilter(self)
 
         self.num_unread_local = 0
         for event in self.conv.events:
             self.on_event(event, set_title=False, set_unread=False)
+
+    def eventFilter(self, obj, event):
+        """Event filter for catching Enter key press and sending message"""
+        if self.enter_send_message and obj is self.messageTextEdit:
+            if event.type() == QtCore.QEvent.KeyPress and event.key() == QtCore.Qt.Key_Return:
+                self.on_send_clicked()
+                return True
+        return super().eventFilter(obj, event)
 
     def get_num_unread(self, local_unread=False):
         """Get number of unread messages (server-side or local)"""
@@ -123,6 +138,27 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
     def is_current(self):
         """Is this conversation in current tab?"""
         return self.tab_parent.conversationsTabWidget.currentWidget() is self
+
+    def set_active(self):
+        """Activate conversation tab"""
+        settings = QtCore.QSettings()
+
+        # Set the client as active
+        if settings.value("send_client_active", True, type=bool):
+            future = asyncio.async(self.client.set_active())
+            future.add_done_callback(lambda future: future.result())
+
+        # Mark the newest event as read
+        if settings.value("send_read_state", True, type=bool):
+            future = asyncio.async(self.conv.update_read_timestamp())
+            future.add_done_callback(lambda future: future.result())
+
+        self.num_unread_local = 0
+        self.set_title()
+
+    def on_text_changed(self):
+        """Message text changed (callback)"""
+        pass
 
     def on_send_clicked(self):
         """Send button pressed (callback)"""

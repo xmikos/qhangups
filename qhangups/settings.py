@@ -18,6 +18,7 @@ class QHangupsSettings(QtGui.QDialog, Ui_QHangupsSettings):
 
         self.sendClientActiveCheckBox.setChecked(settings.value("send_client_active", True, type=bool))
         self.sendReadStateCheckBox.setChecked(settings.value("send_read_state", True, type=bool))
+        self.enterSendMessageCheckBox.setChecked(settings.value("enter_send_message", False, type=bool))
 
         lang_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "languages")
 
@@ -44,5 +45,6 @@ class QHangupsSettings(QtGui.QDialog, Ui_QHangupsSettings):
         settings = QtCore.QSettings()
         settings.setValue("send_client_active", self.sendClientActiveCheckBox.isChecked())
         settings.setValue("send_read_state", self.sendReadStateCheckBox.isChecked())
+        settings.setValue("enter_send_message", self.enterSendMessageCheckBox.isChecked())
         settings.setValue("language", self.languageComboBox.itemData(self.languageComboBox.currentIndex()))
         QtGui.QDialog.accept(self)

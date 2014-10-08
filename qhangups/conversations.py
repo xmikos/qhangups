@@ -28,7 +28,7 @@ class QHangupsConversations(QtGui.QDialog, Ui_QHangupsConversations):
             conv_widget.set_title()
         return self.conv_widgets[conv_id]
 
-    def set_conv_tab(self, conv_id, switch=False, title=None):
+    def set_conv_tab(self, conv_id, switch=False):
         """Add conversation tab (if not present) and optionally switch to it"""
         conv_widget = self.get_conv_widget(conv_id)
         conv_widget_id = self.conversationsTabWidget.indexOf(conv_widget)
@@ -36,28 +36,11 @@ class QHangupsConversations(QtGui.QDialog, Ui_QHangupsConversations):
         if switch:
             self.conversationsTabWidget.setCurrentWidget(conv_widget)
 
-        if title:
-            self.conversationsTabWidget.setTabText(conv_widget_id, title)
-            self.conversationsTabWidget.setTabToolTip(conv_widget_id, title)
-
     def on_tab_current_changed(self, conv_widget_id):
         """Current tab changed (callback)"""
-        settings = QtCore.QSettings()
-
-        # Set the client as active
-        if settings.value("send_client_active", True, type=bool):
-            future = asyncio.async(self.client.set_active())
-            future.add_done_callback(lambda future: future.result())
-
         conv_widget = self.conversationsTabWidget.widget(conv_widget_id)
         if conv_widget:
-            # Mark the newest event as read
-            if settings.value("send_read_state", True, type=bool):
-                future = asyncio.async(conv_widget.conv.update_read_timestamp())
-                future.add_done_callback(lambda future: future.result())
-
-            conv_widget.num_unread_local = 0
-            conv_widget.set_title()
+            conv_widget.set_active()
 
     def on_tab_close_requested(self, conv_widget_id):
         """Tab close button clicked (callback)"""
