@@ -16,6 +16,9 @@ class QHangupsSettings(QtGui.QDialog, Ui_QHangupsSettings):
         """Load settings and populate dialog"""
         settings = QtCore.QSettings()
 
+        self.sendClientActiveCheckBox.setChecked(settings.value("send_client_active", True, type=bool))
+        self.sendReadStateCheckBox.setChecked(settings.value("send_read_state", True, type=bool))
+
         lang_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "languages")
 
         self.languageComboBox.clear()
@@ -39,5 +42,7 @@ class QHangupsSettings(QtGui.QDialog, Ui_QHangupsSettings):
     def accept(self):
         """Save settings after clicking on OK button"""
         settings = QtCore.QSettings()
+        settings.setValue("send_client_active", self.sendClientActiveCheckBox.isChecked())
+        settings.setValue("send_read_state", self.sendReadStateCheckBox.isChecked())
         settings.setValue("language", self.languageComboBox.itemData(self.languageComboBox.currentIndex()))
         QtGui.QDialog.accept(self)

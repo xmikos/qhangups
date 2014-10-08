@@ -1,3 +1,5 @@
+import asyncio
+
 from PyQt4 import QtCore, QtGui
 
 from qhangups.conversationwidget import QHangupsConversationWidget
@@ -40,9 +42,21 @@ class QHangupsConversations(QtGui.QDialog, Ui_QHangupsConversations):
 
     def on_tab_current_changed(self, conv_widget_id):
         """Current tab changed (callback)"""
+        settings = QtCore.QSettings()
+
+        # Set the client as active
+        if settings.value("send_client_active", True, type=bool):
+            future = asyncio.async(self.client.set_active())
+            future.add_done_callback(lambda future: future.result())
+
         conv_widget = self.conversationsTabWidget.widget(conv_widget_id)
         if conv_widget:
-            conv_widget.num_unread = 0
+            # Mark the newest event as read
+            if settings.value("send_read_state", True, type=bool):
+                future = asyncio.async(conv_widget.conv.update_read_timestamp())
+                future.add_done_callback(lambda future: future.result())
+
+            conv_widget.num_unread_local = 0
             conv_widget.set_title()
 
     def on_tab_close_requested(self, conv_widget_id):

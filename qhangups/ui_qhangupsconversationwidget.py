@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qhangups/qhangupsconversationwidget.ui'
 #
-# Created: Fri Sep 26 12:58:43 2014
+# Created: Wed Oct  8 17:32:26 2014
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!

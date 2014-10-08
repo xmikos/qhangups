@@ -78,19 +78,32 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         self.client.on_disconnect.add_observer(self.on_disconnect)
         self.client.on_reconnect.add_observer(self.on_reconnect)
         self.conv.on_event.add_observer(self.on_event)
+        self.conv.on_watermark_notification.add_observer(self.on_watermark_notification)
 
         self.sendButton.clicked.connect(self.on_send_clicked)
 
-        self.num_unread = 0
+        self.num_unread_local = 0
         for event in self.conv.events:
             self.on_event(event, set_title=False, set_unread=False)
+
+    def get_num_unread(self, local_unread=False):
+        """Get number of unread messages (server-side or local)"""
+        settings = QtCore.QSettings()
+        if not settings.value("send_read_state", True, type=bool) or local_unread:
+            num_unread = self.num_unread_local
+        else:
+            num_unread = len([conv_event for conv_event in self.conv.unread_events if
+                              isinstance(conv_event, hangups.ChatMessageEvent) and
+                              not self.conv.get_user(conv_event.user_id).is_self])
+        return num_unread
 
     def set_title(self):
         """Update this conversation's tab title."""
         title = get_conv_name(self.conv, truncate=True)
         conv_widget_id = self.tab_parent.conversationsTabWidget.indexOf(self)
-        if self.num_unread > 0:
-            title += ' ({})'.format(self.num_unread)
+        num_unread = self.get_num_unread()
+        if num_unread > 0:
+            title += ' ({})'.format(num_unread)
             self.tab_parent.conversationsTabWidget.tabBar().setTabTextColor(conv_widget_id, QtCore.Qt.darkBlue)
         else:
             self.tab_parent.conversationsTabWidget.tabBar().setTabTextColor(conv_widget_id, QtGui.QColor())
@@ -146,6 +159,10 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         """Show that Hangups has reconnected to server (callback)"""
         self.add_message(datetime.datetime.now(tz=datetime.timezone.utc), "<i>*** connected ***</i>")
 
+    def on_watermark_notification(self, watermark_notification):
+        """Update unread count after receiving watermark notification (callback)"""
+        self.set_title()
+
     def on_event(self, conv_event, set_title=True, set_unread=True):
         """Hangups event received (callback)"""
         user = self.conv.get_user(conv_event.user_id)
@@ -166,7 +183,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         self.add_message(conv_event.timestamp, message_to_html(conv_event), user.full_name)
         # Update the count of unread messages.
         if not user.is_self and set_unread and not self.is_current():
-            self.num_unread += 1
+            self.num_unread_local += 1
 
     def handle_rename(self, conv_event, user):
         """Handle received rename event"""
