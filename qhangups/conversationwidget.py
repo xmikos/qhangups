@@ -43,11 +43,8 @@ class HTMLDelegate(QtGui.QStyledItemDelegate):
         textRect = style.subElementRect(QtGui.QStyle.SE_ItemViewItemText, options)
         painter.save()
         painter.translate(textRect.topLeft())
-        # Original example contained line
-        # painter.setClipRect(textRect.translated(-textRect.topLeft()))
-        # but text is drawn clipped with it on kubuntu 12.04
+        painter.setClipRect(textRect.translated(-textRect.topLeft()))
         doc.documentLayout().draw(painter, ctx)
-
         painter.restore()
 
     def sizeHint(self, option, index):
