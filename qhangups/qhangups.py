@@ -217,14 +217,15 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def icon_activated(self, reason):
         """Connect or disconnect from Hangouts by double-click on tray icon"""
-        if reason == QtGui.QSystemTrayIcon.DoubleClick:
-            self.icon_doubleclick_timer.stop()
-            if self.hangups_running:
-                self.hangups_stop()
+        if reason == QtGui.QSystemTrayIcon.Trigger:
+            if self.icon_doubleclick_timer.isActive():
+                self.icon_doubleclick_timer.stop()
+                if self.hangups_running:
+                    self.hangups_stop()
+                else:
+                    self.hangups_start()
             else:
-                self.hangups_start()
-        elif reason == QtGui.QSystemTrayIcon.Trigger:
-            self.icon_doubleclick_timer.start(QtGui.qApp.doubleClickInterval())
+                self.icon_doubleclick_timer.start(QtGui.qApp.doubleClickInterval())
 
     def icon_doubleclick_timeout(self):
         """Open or close list of conversations after single-click on tray icon"""
