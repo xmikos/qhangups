@@ -1,8 +1,17 @@
 __pycache__/
 *.py[cod]
 
+libs/
+
+aiohttp
+appdirs.py
+bs4
+configargparse.py
 hangups
 purplex
-aiohttp
-robobrowser
 quamash
+requests
+robobrowser
+six.py
+urwid
+werkzeug
