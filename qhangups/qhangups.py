@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
 import sys, os, logging, argparse, asyncio, signal
-from PyQt4 import QtCore, QtGui
 
+from PyQt4 import QtCore, QtGui
 import appdirs
 import hangups
 from hangups.ui.notify import Notifier
+
+# Force use of PyQt4 for Quamash (until we are PyQt5 compatible)
+os.environ['QUAMASH_QTIMPL'] = "PyQt4"
 from quamash import QEventLoop
 
 from qhangups.version import __version__
