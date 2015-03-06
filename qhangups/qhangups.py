@@ -340,6 +340,7 @@ def main():
 
     # Start Quamash event loop
     loop = QEventLoop(app)
+    asyncio.set_event_loop(loop)
     with loop:
         widget = QHangupsMainWidget(args.cookies)
         loop.run_forever()

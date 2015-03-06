@@ -1,5 +1,3 @@
-import asyncio
-
 from PyQt4 import QtCore, QtGui
 
 from qhangups.conversationwidget import QHangupsConversationWidget
