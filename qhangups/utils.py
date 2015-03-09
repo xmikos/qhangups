@@ -34,7 +34,9 @@ def segment_to_html(segment):
     if segment.type_ == hangups.schemas.SegmentType.TEXT:
         message.append(text)
     elif segment.type_ == hangups.schemas.SegmentType.LINK:
-        message.append('<a href="{}">{}</a>'.format(segment.link_target, text))
+        message.append(
+            '<a href="{}">{}</a>'.format(segment.link_target if segment.link_target else text, text)
+        )
     elif segment.type_ == hangups.schemas.SegmentType.LINE_BREAK:
         message.append('<br>\n')
     else:

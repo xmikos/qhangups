@@ -1,6 +1,6 @@
 import datetime, asyncio
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtWebKit
 
 import hangups
 from hangups.ui.utils import get_conv_name
@@ -9,64 +9,11 @@ from qhangups.utils import text_to_segments, message_to_html
 from qhangups.ui_qhangupsconversationwidget import Ui_QHangupsConversationWidget
 
 
-class HTMLDelegate(QtGui.QStyledItemDelegate):
-    """QStyledItemDelegate implementation - draws HTML instead of plain text
-    http://stackoverflow.com/questions/1956542/how-to-make-item-view-render-rich-html-text-in-qt/1956781#1956781
-    """
-    def paint(self, painter, option, index):
-        """QStyledItemDelegate.paint implementation"""
-        option.state &= ~QtGui.QStyle.State_HasFocus  # never draw focus rect
-
-        options = QtGui.QStyleOptionViewItemV4(option)
-        self.initStyleOption(options, index)
-
-        style = QtGui.QApplication.style() if options.widget is None else options.widget.style()
-
-        doc = QtGui.QTextDocument()
-        doc.setDocumentMargin(1)
-        doc.setHtml(options.text)
-        if options.widget is not None:
-            doc.setDefaultFont(options.widget.font())
-        # bad long (multiline) strings processing
-        doc.setTextWidth(options.rect.width())
-
-        options.text = ""
-        style.drawControl(QtGui.QStyle.CE_ItemViewItem, options, painter)
-
-        ctx = QtGui.QAbstractTextDocumentLayout.PaintContext()
-
-        # Highlighting text if item is selected
-        if option.state & QtGui.QStyle.State_Selected:
-            ctx.palette.setColor(QtGui.QPalette.Text, option.palette.color(QtGui.QPalette.Active,
-                                                                           QtGui.QPalette.HighlightedText))
-
-        textRect = style.subElementRect(QtGui.QStyle.SE_ItemViewItemText, options)
-        painter.save()
-        painter.translate(textRect.topLeft())
-        painter.setClipRect(textRect.translated(-textRect.topLeft()))
-        doc.documentLayout().draw(painter, ctx)
-        painter.restore()
-
-    def sizeHint(self, option, index):
-        """QStyledItemDelegate.sizeHint implementation"""
-        options = QtGui.QStyleOptionViewItemV4(option)
-        self.initStyleOption(options, index)
-
-        doc = QtGui.QTextDocument()
-        doc.setDocumentMargin(1)
-        #  bad long (multiline) strings processing
-        doc.setTextWidth(options.rect.width())
-        doc.setHtml(options.text)
-        return QtCore.QSize(doc.idealWidth(),
-                            QtGui.QStyledItemDelegate.sizeHint(self, option, index).height())
-
-
 class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
     """Conversation tab"""
     def __init__(self, tab_parent, client, conv, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.messagesListWidget.setItemDelegate(HTMLDelegate(self.messagesListWidget))
 
         self.tab_parent = tab_parent
         self.client = client
@@ -79,12 +26,17 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
 
         self.messageTextEdit.textChanged.connect(self.on_text_changed)
         self.sendButton.clicked.connect(self.on_send_clicked)
+        self.messagesWebView.page().mainFrame().contentsSizeChanged.connect(self.on_contents_size_changed)
+        self.messagesWebView.page().linkClicked.connect(self.on_link_clicked)
 
         settings = QtCore.QSettings()
         self.enter_send_message = settings.value("enter_send_message", False, type=bool)
 
         # Install ourselves as event filter so we can catch Enter key press (see eventFilter method)
         self.messageTextEdit.installEventFilter(self)
+
+        # Initialize QWebView with list of messages
+        self.init_messages()
 
         self.num_unread_local = 0
         for event in self.conv.events:
@@ -122,15 +74,38 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         self.tab_parent.conversationsTabWidget.setTabText(conv_widget_id, title)
         self.tab_parent.conversationsTabWidget.setTabToolTip(conv_widget_id, title)
 
+    def init_messages(self):
+        """Initialize QWebView with list of messages"""
+        self.messagesWebView.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        self.messagesWebView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
+        #self.messagesWebView.settings().setAttribute(QtWebKit.QWebSettings.LocalContentCanAccessRemoteUrls, True)
+        self.messagesWebView.setHtml(
+            """<!doctype html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <title>Messages</title>
+                <style>
+                    html { font-family: sans-serif; font-size: 10pt; }
+                    div.message { margin-bottom: 1em; }
+                </style>
+            </head>
+            <body>
+                <div id="messages"></div>
+            </body>
+            </html>"""
+        )
+
     def add_message(self, timestamp, text, username=None):
         """Add new message to list of messages"""
         datestr = "%d.%m. %H:%M" if timestamp.astimezone(tz=None).date() < datetime.date.today() else "%H:%M"
         message = "<b>{}{}:</b><br>\n{}<br>\n".format(timestamp.astimezone(tz=None).strftime(datestr),
                                                       " | {}".format(username) if username is not None else "",
                                                       text)
-        item = QtGui.QListWidgetItem(message)
-        self.messagesListWidget.addItem(item)
-        self.messagesListWidget.scrollToBottom()
+        doc = self.messagesWebView.page().mainFrame().documentElement()
+        doc.findFirst("div[id=messages]").appendInside(
+            """<div class="message">{}</div>""".format(message)
+        )
 
     def is_current(self):
         """Is this conversation in current tab?"""
@@ -152,6 +127,32 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
 
         self.num_unread_local = 0
         self.set_title()
+
+    def on_contents_size_changed(self, size):
+        """Size of contents in messagesWebView changed (callback)"""
+        page = self.messagesWebView.page()
+        viewport_height = page.viewportSize().height()
+        scroll_position = page.mainFrame().scrollPosition().y()
+
+        # Compute max. scroll position manually, because
+        # scrollBarMaximum(QtCore.Qt.Vertical) doesn't work here
+        scroll_max = page.mainFrame().contentsSize().height() - viewport_height
+
+        # If user has scrolled more than half of viewport away, don't scroll down automatically
+        if scroll_position < (scroll_max - 0.5 * viewport_height):
+            return
+
+        # Use singl-shot timer, because scrolling doesn't work here (maybe some Qt bug?)
+        QtCore.QTimer.singleShot(0, self.on_contents_size_changed_timeout)
+
+    def on_contents_size_changed_timeout(self):
+        """Scroll to the bottom after timeout of single-shot timer (callback)"""
+        frame = self.messagesWebView.page().mainFrame()
+        frame.setScrollPosition(QtCore.QPoint(0, frame.scrollBarMaximum(QtCore.Qt.Vertical)))
+
+    def on_link_clicked(self, url):
+        """Open links in external web browser (callback)"""
+        QtGui.QDesktopServices.openUrl(url)
 
     def on_text_changed(self):
         """Message text changed (callback)"""

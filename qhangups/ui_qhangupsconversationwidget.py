@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'qhangups/qhangupsconversationwidget.ui'
 #
-# Created: Thu Oct  9 00:54:07 2014
-#      by: PyQt4 UI code generator 4.11.1
+# Created: Mon Mar  9 15:40:38 2015
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,14 +27,20 @@ class Ui_QHangupsConversationWidget(object):
     def setupUi(self, QHangupsConversationWidget):
         QHangupsConversationWidget.setObjectName(_fromUtf8("QHangupsConversationWidget"))
         QHangupsConversationWidget.resize(500, 350)
-        self.verticalLayout = QtGui.QVBoxLayout(QHangupsConversationWidget)
+        self.verticalLayout_2 = QtGui.QVBoxLayout(QHangupsConversationWidget)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.messagesFrame = QtGui.QFrame(QHangupsConversationWidget)
+        self.messagesFrame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.messagesFrame.setFrameShadow(QtGui.QFrame.Sunken)
+        self.messagesFrame.setObjectName(_fromUtf8("messagesFrame"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.messagesFrame)
+        self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.messagesListWidget = QtGui.QListWidget(QHangupsConversationWidget)
-        self.messagesListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.messagesListWidget.setTextElideMode(QtCore.Qt.ElideNone)
-        self.messagesListWidget.setWordWrap(True)
-        self.messagesListWidget.setObjectName(_fromUtf8("messagesListWidget"))
-        self.verticalLayout.addWidget(self.messagesListWidget)
+        self.messagesWebView = QtWebKit.QWebView(self.messagesFrame)
+        self.messagesWebView.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
+        self.messagesWebView.setObjectName(_fromUtf8("messagesWebView"))
+        self.verticalLayout.addWidget(self.messagesWebView)
+        self.verticalLayout_2.addWidget(self.messagesFrame)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.messageTextEdit = QtGui.QPlainTextEdit(QHangupsConversationWidget)
@@ -50,13 +56,16 @@ class Ui_QHangupsConversationWidget(object):
         self.sendButton.setMaximumSize(QtCore.QSize(16777215, 60))
         self.sendButton.setObjectName(_fromUtf8("sendButton"))
         self.horizontalLayout.addWidget(self.sendButton)
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
 
         self.retranslateUi(QHangupsConversationWidget)
         QtCore.QMetaObject.connectSlotsByName(QHangupsConversationWidget)
+        QHangupsConversationWidget.setTabOrder(self.messageTextEdit, self.sendButton)
+        QHangupsConversationWidget.setTabOrder(self.sendButton, self.messagesWebView)
 
     def retranslateUi(self, QHangupsConversationWidget):
         QHangupsConversationWidget.setWindowTitle(_translate("QHangupsConversationWidget", "QHangups - Conversation", None))
         self.sendButton.setText(_translate("QHangupsConversationWidget", "Send", None))
         self.sendButton.setShortcut(_translate("QHangupsConversationWidget", "Ctrl+Return", None))
 
+from PyQt4 import QtWebKit
