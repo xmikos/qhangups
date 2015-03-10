@@ -272,6 +272,9 @@ class QHangupsMainWidget(QtGui.QWidget):
         """Open conversation in new tab"""
         self.messages_dialog.set_conv_tab(conv_id, switch=switch)
         self.messages_dialog.show()
+        if switch:
+            self.messages_dialog.raise_()
+            self.messages_dialog.activateWindow()
 
     def on_connect(self, initial_data):
         """Handle connecting for the first time (callback)"""
@@ -299,8 +302,7 @@ class QHangupsMainWidget(QtGui.QWidget):
     def on_event(self, conv_event):
         """Open conversation tab for new messages when they arrive (callback)"""
         if isinstance(conv_event, hangups.ChatMessageEvent):
-            self.messages_dialog.set_conv_tab(conv_event.conversation_id)
-            self.messages_dialog.show()
+            self.open_messages_dialog(conv_event.conversation_id, switch=False)
 
 
 def main():

@@ -127,6 +127,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
 
         self.num_unread_local = 0
         self.set_title()
+        self.messageTextEdit.setFocus()
 
     def on_contents_size_changed(self, size):
         """Size of contents in messagesWebView changed (callback)"""
@@ -184,6 +185,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         finally:
             self.messageTextEdit.setEnabled(True)
             self.sendButton.setEnabled(True)
+            self.messageTextEdit.setFocus()
 
     def on_disconnect(self):
         """Show that Hangups has disconnected from server (callback)"""
