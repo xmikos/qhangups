@@ -6,18 +6,24 @@ from qhangups.ui_qhangupsconversations import Ui_QHangupsConversations
 
 class QHangupsConversations(QtGui.QDialog, Ui_QHangupsConversations):
     """Tabbed window with opened conversations"""
-    def __init__(self, client, conv_list, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.client = client
-        self.conv_list = conv_list
+        self.client = None
+        self.conv_list = None
         self.conv_widgets = {}
 
+        self.parent().stopHangups.connect(self.on_stop)
         self.conversationsTabWidget.currentChanged.connect(self.on_tab_current_changed)
         self.conversationsTabWidget.tabCloseRequested.connect(self.on_tab_close_requested)
 
         # Install ourselves as event filter so we can catch middle mouse button (see eventFilter method)
         self.conversationsTabWidget.tabBar().installEventFilter(self)
+
+    def init_conversations(self, client, conv_list):
+        """Initialize list of conversations"""
+        self.client = client
+        self.conv_list = conv_list
 
     def eventFilter(self, obj, event):
         """Event filter for catching middle mouse button on tab and closing it"""
@@ -46,6 +52,14 @@ class QHangupsConversations(QtGui.QDialog, Ui_QHangupsConversations):
 
         if switch:
             self.conversationsTabWidget.setCurrentWidget(conv_widget)
+
+    def on_stop(self):
+        """Remove all QHangupsConversationWidgets after stopping Hangups (callback)"""
+        self.conversationsTabWidget.clear()
+        self.conv_widgets = {}
+        self.client = None
+        self.conv_list = None
+        self.close()
 
     def on_tab_current_changed(self, conv_widget_id):
         """Current tab changed (callback)"""

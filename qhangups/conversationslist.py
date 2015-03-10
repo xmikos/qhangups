@@ -8,16 +8,35 @@ from qhangups.ui_qhangupsconversationslist import Ui_QHangupsConversationsList
 
 class QHangupsConversationsList(QtGui.QDialog, Ui_QHangupsConversationsList):
     """Window with list of conversations"""
-    def __init__(self, client, conv_list, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.client = None
+        self.conv_list = None
+
+        self.parent().startHangups.connect(self.on_start)
+        self.parent().stopHangups.connect(self.on_stop)
+
+        self.set_status(self.tr("Disconnected"))
+
+    def init_conversations(self, client, conv_list):
+        """Initialize list of conversations and connect signals"""
         self.client = client
         self.conv_list = conv_list
 
         self.conv_list.on_event.add_observer(self.on_event)
+        self.client.on_disconnect.add_observer(self.on_disconnect)
+        self.client.on_reconnect.add_observer(self.on_reconnect)
         self.conversationsListWidget.itemActivated.connect(self.on_item_activated)
 
         self.update_conversations()
+
+    def set_status(self, status_text):
+        """Display static status text instead of list of conversations"""
+        self.conversationsListWidget.clear()
+        item = QtGui.QListWidgetItem(status_text)
+        item.setTextAlignment(QtCore.Qt.AlignHCenter)
+        self.conversationsListWidget.addItem(item)
 
     def update_conversations(self):
         """Update list of conversations"""
@@ -30,9 +49,42 @@ class QHangupsConversationsList(QtGui.QDialog, Ui_QHangupsConversationsList):
 
     def on_item_activated(self, item):
         """List item activated (callback)"""
-        self.parent().open_messages_dialog(item.data(QtCore.Qt.UserRole))
+        item_data = item.data(QtCore.Qt.UserRole)
+        if item_data:
+            self.parent().open_messages_dialog(item_data)
 
     def on_event(self, conv_event):
         """Hangups event received (callback)"""
         if isinstance(conv_event, hangups.RenameEvent):
             self.update_conversations()
+
+    def on_disconnect(self):
+        """Show that Hangups has disconnected from server (callback)"""
+        self.set_status(self.tr("Reconnecting..."))
+
+    def on_reconnect(self):
+        """Show that Hangups has reconnected to server (callback)"""
+        self.update_conversations()
+
+    def on_start(self):
+        """Show that Hangups is starting (callback)"""
+        self.set_status(self.tr("Connecting..."))
+
+    def on_stop(self):
+        """Show that Hangups has been stopped (callback)"""
+        self.client = None
+        self.conv_list = None
+        self.set_status(self.tr("Disconnected"))
+
+    def showEvent(self, event):
+        """Restore window geometry when window is displayed"""
+        settings = QtCore.QSettings()
+        if settings.value("conversationslist_geometry"):
+            self.restoreGeometry(settings.value("conversationslist_geometry"))
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        """Save window geometry when window is hidden"""
+        settings = QtCore.QSettings()
+        settings.setValue("conversationslist_geometry", self.saveGeometry())
+        super().hideEvent(event)

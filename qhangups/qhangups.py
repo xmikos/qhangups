@@ -27,6 +27,9 @@ qt_translator = QtCore.QTranslator()
 
 class QHangupsMainWidget(QtGui.QWidget):
     """QHangups main widget (icon in system tray)"""
+    startHangups = QtCore.pyqtSignal()
+    stopHangups = QtCore.pyqtSignal()
+
     def __init__(self, cookies_path, parent=None):
         super().__init__(parent)
         self.set_language()
@@ -46,8 +49,8 @@ class QHangupsMainWidget(QtGui.QWidget):
         self.notifier = None   # hangups.notify.Notifier
 
         # Widgets
-        self.conversations_dialog = None
-        self.messages_dialog = None
+        self.conversations_dialog = QHangupsConversationsList(self)
+        self.messages_dialog = QHangupsConversations(self)
 
         # Setup system tray icon doubleclick timer
         self.icon_doubleclick_timer = QtCore.QTimer(self)
@@ -157,6 +160,8 @@ class QHangupsMainWidget(QtGui.QWidget):
         """Connect to Hangouts"""
         cookies = self.login(self.cookies_path)
         if cookies:
+            self.startHangups.emit()
+
             self.client = hangups.Client(cookies)
             self.client.on_connect.add_observer(self.on_connect)
 
@@ -169,6 +174,8 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def hangups_stop(self):
         """Disconnect from Hangouts"""
+        self.stopHangups.emit()
+
         asyncio.async(
             self.client.disconnect()
         ).add_done_callback(lambda future: future.result())
@@ -176,9 +183,6 @@ class QHangupsMainWidget(QtGui.QWidget):
         self.conv_list = None
         self.user_list = None
         self.notifier = None
-
-        self.conversations_dialog = None
-        self.messages_dialog = None
 
         self.hangups_running = False
         self.client = None
@@ -232,10 +236,13 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def icon_doubleclick_timeout(self):
         """Open or close list of conversations after single-click on tray icon"""
-        if self.conversations_dialog and self.conversations_dialog.isVisible():
-            self.conversations_dialog.hide()
-        elif self.conversations_dialog:
-            self.conversations_dialog.show()
+        if self.conversations_dialog:
+            if self.conversations_dialog.isVisible() and not self.conversations_dialog.isMinimized():
+                self.conversations_dialog.hide()
+            else:
+                self.conversations_dialog.show()
+                self.conversations_dialog.raise_()
+                self.conversations_dialog.activateWindow()
 
     def quit(self, force=False):
         """Quit QHangups"""
@@ -259,12 +266,10 @@ class QHangupsMainWidget(QtGui.QWidget):
             print("Language changed")
             self.retranslateUi()
 
-        QtGui.QWidget.changeEvent(self, event)
+        super().changeEvent(event)
 
     def open_messages_dialog(self, conv_id, switch=True):
         """Open conversation in new tab"""
-        if not self.messages_dialog:
-            self.messages_dialog = QHangupsConversations(self.client, self.conv_list, self)
         self.messages_dialog.set_conv_tab(conv_id, switch=switch)
         self.messages_dialog.show()
 
@@ -281,16 +286,19 @@ class QHangupsMainWidget(QtGui.QWidget):
                                                   initial_data.sync_timestamp)
         self.conv_list.on_event.add_observer(self.on_event)
 
+        # Setup notifications
         self.notifier = Notifier(self.conv_list)
 
-        self.conversations_dialog = QHangupsConversationsList(self.client, self.conv_list, self)
+        # Setup conversations window
+        self.messages_dialog.init_conversations(self.client, self.conv_list)
+
+        # Setup conversations list window and show it
+        self.conversations_dialog.init_conversations(self.client, self.conv_list)
         self.conversations_dialog.show()
 
     def on_event(self, conv_event):
         """Open conversation tab for new messages when they arrive (callback)"""
         if isinstance(conv_event, hangups.ChatMessageEvent):
-            if not self.messages_dialog:
-                self.messages_dialog = QHangupsConversations(self.client, self.conv_list, self)
             self.messages_dialog.set_conv_tab(conv_event.conversation_id)
             self.messages_dialog.show()
 

@@ -27,7 +27,7 @@ def text_to_segments(text):
 
 def segment_to_html(segment):
     """Create simple HTML from ChatMessageSegment"""
-    text = html.escape(segment.text)
+    text = html.escape(segment.text) if segment.text else ""
     text = text.replace('\n', '<br>\n')
 
     message = []
