@@ -40,7 +40,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
 
         self.num_unread_local = 0
         for event in self.conv.events:
-            self.on_event(event, set_title=False, set_unread=False)
+            self.on_event(event, set_title=False, set_unread=False, check_duplicates=False)
 
     def eventFilter(self, obj, event):
         """Event filter for catching Enter key press and sending message"""
@@ -199,8 +199,16 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         """Update unread count after receiving watermark notification (callback)"""
         self.set_title()
 
-    def on_event(self, conv_event, set_title=True, set_unread=True):
+    def on_event(self, conv_event, set_title=True, set_unread=True, check_duplicates=True):
         """Hangups event received (callback)"""
+        # If event is already in conv._events_dict, don't do anything (fix for duplicate messages)
+        if check_duplicates:
+            try:
+                self.conv.get_event(conv_event.id_)
+                return
+            except KeyError:
+                pass
+
         user = self.conv.get_user(conv_event.user_id)
 
         if isinstance(conv_event, hangups.ChatMessageEvent):
