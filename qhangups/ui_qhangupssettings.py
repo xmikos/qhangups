@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qhangups/qhangupssettings.ui'
 #
-# Created: Mon Mar  9 15:40:38 2015
+# Created: Tue Mar 10 16:08:23 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

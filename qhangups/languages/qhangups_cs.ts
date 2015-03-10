@@ -43,36 +43,51 @@
         <source>QHangups</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="conversationslist.py" line="77"/>
+        <source>Disconnected</source>
+        <translation>Odpojeno</translation>
+    </message>
+    <message>
+        <location filename="conversationslist.py" line="63"/>
+        <source>Reconnecting...</source>
+        <translation>Opakuji připojení...</translation>
+    </message>
+    <message>
+        <location filename="conversationslist.py" line="71"/>
+        <source>Connecting...</source>
+        <translation>Připojuji se...</translation>
+    </message>
 </context>
 <context>
     <name>QHangupsMainWidget</name>
     <message>
-        <location filename="qhangups.py" line="103"/>
+        <location filename="qhangups.py" line="106"/>
         <source>&amp;Connect</source>
         <translation>&amp;Připojit</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="104"/>
+        <location filename="qhangups.py" line="107"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Odpojit</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="105"/>
+        <location filename="qhangups.py" line="108"/>
         <source>S&amp;ettings ...</source>
         <translation>Na&amp;stavení ...</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="106"/>
+        <location filename="qhangups.py" line="109"/>
         <source>A&amp;bout ...</source>
         <translation>O p&amp;rogramu ...</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="107"/>
+        <location filename="qhangups.py" line="110"/>
         <source>&amp;Quit</source>
         <translation>U&amp;končit</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="115"/>
+        <location filename="qhangups.py" line="118"/>
         <source>QHangups - Warning</source>
         <translation>QHangups - Varování</translation>
     </message>
@@ -82,57 +97,57 @@
         <translation type="obsolete">Byli jste odpojeni od Google Hangouts!</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="189"/>
+        <location filename="qhangups.py" line="193"/>
         <source>About</source>
         <translation>O programu</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="189"/>
+        <location filename="qhangups.py" line="193"/>
         <source>QHangups {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="244"/>
+        <location filename="qhangups.py" line="251"/>
         <source>QHangups - Quit</source>
         <translation>QHangups - Ukončení</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="244"/>
+        <location filename="qhangups.py" line="251"/>
         <source>You are still connected to Google Hangouts. Do you really want to quit QHangups?</source>
         <translation>Jste stále připojeni ke Google Hangouts. Chcete opravdu ukončit QHangups?</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="115"/>
+        <location filename="qhangups.py" line="118"/>
         <source>Google login failed!</source>
         <translation>Přihlášení k serveru Google selhalo!</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="121"/>
+        <location filename="qhangups.py" line="124"/>
         <source>QHangups - Email</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="121"/>
+        <location filename="qhangups.py" line="124"/>
         <source>Email:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="125"/>
+        <location filename="qhangups.py" line="128"/>
         <source>QHangups - Password</source>
         <translation>QHangups - Heslo</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="125"/>
+        <location filename="qhangups.py" line="128"/>
         <source>Password:</source>
         <translation>Heslo:</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="137"/>
+        <location filename="qhangups.py" line="140"/>
         <source>QHangups - PIN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="137"/>
+        <location filename="qhangups.py" line="140"/>
         <source>PIN:</source>
         <translation></translation>
     </message>
