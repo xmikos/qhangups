@@ -232,7 +232,7 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def icon_activated(self, reason):
         """Connect or disconnect from Hangouts by double-click on tray icon"""
-        if reason == QtGui.QSystemTrayIcon.Trigger:
+        if reason == QtGui.QSystemTrayIcon.Trigger or reason == QtGui.QSystemTrayIcon.DoubleClick:
             if self.icon_doubleclick_timer.isActive():
                 self.icon_doubleclick_timer.stop()
                 if self.hangups_running:
