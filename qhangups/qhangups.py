@@ -9,7 +9,15 @@ from hangups.ui.notify import Notifier
 
 # Force use of PyQt4 for Quamash (until we are PyQt5 compatible)
 os.environ['QUAMASH_QTIMPL'] = "PyQt4"
+
+# Fake os.name to be always "posix" when loading QEventLoop.
+# We need SelectorEventLoop on Windows because
+# ProactorEventLoop doesn't support SSL in Python < 3.5
+# (and Quamash uses ProactorEventLoop on Windows by default)
+_os_name_orig = os.name
+os.name = "posix"
 from quamash import QEventLoop
+os.name = _os_name_orig
 
 from qhangups.version import __version__
 from qhangups.settings import QHangupsSettings
