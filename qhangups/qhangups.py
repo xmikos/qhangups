@@ -57,8 +57,8 @@ class QHangupsMainWidget(QtGui.QWidget):
         self.notifier = None   # hangups.notify.Notifier
 
         # Widgets
-        self.conversations_dialog = QHangupsConversationsList(self)
-        self.messages_dialog = QHangupsConversations(self)
+        self.conversations_dialog = QHangupsConversationsList(controller=self)
+        self.messages_dialog = QHangupsConversations(controller=self)
 
         # Setup system tray icon doubleclick timer
         self.icon_doubleclick_timer = QtCore.QTimer(self)
@@ -248,7 +248,7 @@ class QHangupsMainWidget(QtGui.QWidget):
             if self.conversations_dialog.isVisible() and not self.conversations_dialog.isMinimized():
                 self.conversations_dialog.hide()
             else:
-                self.conversations_dialog.show()
+                self.conversations_dialog.showNormal()
                 self.conversations_dialog.raise_()
                 self.conversations_dialog.activateWindow()
 
@@ -279,7 +279,7 @@ class QHangupsMainWidget(QtGui.QWidget):
     def open_messages_dialog(self, conv_id, switch=True):
         """Open conversation in new tab"""
         self.messages_dialog.set_conv_tab(conv_id, switch=switch)
-        self.messages_dialog.show()
+        self.messages_dialog.showNormal()
         if switch:
             self.messages_dialog.raise_()
             self.messages_dialog.activateWindow()

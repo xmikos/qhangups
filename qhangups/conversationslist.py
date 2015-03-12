@@ -8,14 +8,16 @@ from qhangups.ui_qhangupsconversationslist import Ui_QHangupsConversationsList
 
 class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList):
     """Window with list of conversations"""
-    def __init__(self, parent=None):
+    def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+
+        self.controller = controller
         self.client = None
         self.conv_list = None
 
-        self.parent().startHangups.connect(self.on_start)
-        self.parent().stopHangups.connect(self.on_stop)
+        self.controller.startHangups.connect(self.on_start)
+        self.controller.stopHangups.connect(self.on_stop)
 
         self.set_status(self.tr("Disconnected"))
 
@@ -51,7 +53,7 @@ class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList)
         """List item activated (callback)"""
         item_data = item.data(QtCore.Qt.UserRole)
         if item_data:
-            self.parent().open_messages_dialog(item_data)
+            self.controller.open_messages_dialog(item_data)
 
     def on_event(self, conv_event):
         """Hangups event received (callback)"""

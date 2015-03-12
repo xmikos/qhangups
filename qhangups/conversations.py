@@ -6,14 +6,16 @@ from qhangups.ui_qhangupsconversations import Ui_QHangupsConversations
 
 class QHangupsConversations(QtGui.QMainWindow, Ui_QHangupsConversations):
     """Tabbed window with opened conversations"""
-    def __init__(self, parent=None):
+    def __init__(self, controller, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+
+        self.controller = controller
         self.client = None
         self.conv_list = None
         self.conv_widgets = {}
 
-        self.parent().stopHangups.connect(self.on_stop)
+        self.controller.stopHangups.connect(self.on_stop)
         self.conversationsTabWidget.currentChanged.connect(self.on_tab_current_changed)
         self.conversationsTabWidget.tabCloseRequested.connect(self.on_tab_close_requested)
 
@@ -74,3 +76,16 @@ class QHangupsConversations(QtGui.QMainWindow, Ui_QHangupsConversations):
         del self.conv_widgets[conv_widget.conv.id_]
         if not self.conv_widgets:
             self.close()
+
+    def showEvent(self, event):
+        """Restore window geometry when window is displayed"""
+        settings = QtCore.QSettings()
+        if settings.value("conversations_geometry"):
+            self.restoreGeometry(settings.value("conversations_geometry"))
+        super().showEvent(event)
+
+    def hideEvent(self, event):
+        """Save window geometry when window is hidden"""
+        settings = QtCore.QSettings()
+        settings.setValue("conversations_geometry", self.saveGeometry())
+        super().hideEvent(event)
