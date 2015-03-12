@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qhangups/qhangupsconversationslist.ui'
 #
-# Created: Tue Mar 10 16:08:24 2015
+# Created: Thu Mar 12 14:06:14 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,12 +27,22 @@ class Ui_QHangupsConversationsList(object):
     def setupUi(self, QHangupsConversationsList):
         QHangupsConversationsList.setObjectName(_fromUtf8("QHangupsConversationsList"))
         QHangupsConversationsList.resize(250, 500)
-        self.gridLayout = QtGui.QGridLayout(QHangupsConversationsList)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.conversationsListWidget = QtGui.QListWidget(QHangupsConversationsList)
+        self.centralwidget = QtGui.QWidget(QHangupsConversationsList)
+        self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.conversationsListWidget = QtGui.QListWidget(self.centralwidget)
         self.conversationsListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.conversationsListWidget.setObjectName(_fromUtf8("conversationsListWidget"))
-        self.gridLayout.addWidget(self.conversationsListWidget, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.conversationsListWidget)
+        QHangupsConversationsList.setCentralWidget(self.centralwidget)
+        self.menubar = QtGui.QMenuBar(QHangupsConversationsList)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 250, 27))
+        self.menubar.setObjectName(_fromUtf8("menubar"))
+        QHangupsConversationsList.setMenuBar(self.menubar)
+        self.statusbar = QtGui.QStatusBar(QHangupsConversationsList)
+        self.statusbar.setObjectName(_fromUtf8("statusbar"))
+        QHangupsConversationsList.setStatusBar(self.statusbar)
 
         self.retranslateUi(QHangupsConversationsList)
         QtCore.QMetaObject.connectSlotsByName(QHangupsConversationsList)

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qhangups/qhangupsconversations.ui'
 #
-# Created: Tue Mar 10 16:08:24 2015
+# Created: Thu Mar 12 14:06:14 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,14 +27,24 @@ class Ui_QHangupsConversations(object):
     def setupUi(self, QHangupsConversations):
         QHangupsConversations.setObjectName(_fromUtf8("QHangupsConversations"))
         QHangupsConversations.resize(500, 350)
-        self.gridLayout = QtGui.QGridLayout(QHangupsConversations)
+        self.centralwidget = QtGui.QWidget(QHangupsConversations)
+        self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        self.gridLayout = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.conversationsTabWidget = QtGui.QTabWidget(QHangupsConversations)
+        self.conversationsTabWidget = QtGui.QTabWidget(self.centralwidget)
         self.conversationsTabWidget.setElideMode(QtCore.Qt.ElideRight)
         self.conversationsTabWidget.setTabsClosable(True)
         self.conversationsTabWidget.setMovable(True)
         self.conversationsTabWidget.setObjectName(_fromUtf8("conversationsTabWidget"))
         self.gridLayout.addWidget(self.conversationsTabWidget, 0, 0, 1, 1)
+        QHangupsConversations.setCentralWidget(self.centralwidget)
+        self.menubar = QtGui.QMenuBar(QHangupsConversations)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 500, 27))
+        self.menubar.setObjectName(_fromUtf8("menubar"))
+        QHangupsConversations.setMenuBar(self.menubar)
+        self.statusbar = QtGui.QStatusBar(QHangupsConversations)
+        self.statusbar.setObjectName(_fromUtf8("statusbar"))
+        QHangupsConversations.setStatusBar(self.statusbar)
 
         self.retranslateUi(QHangupsConversations)
         self.conversationsTabWidget.setCurrentIndex(-1)

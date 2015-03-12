@@ -4,7 +4,7 @@ from qhangups.conversationwidget import QHangupsConversationWidget
 from qhangups.ui_qhangupsconversations import Ui_QHangupsConversations
 
 
-class QHangupsConversations(QtGui.QDialog, Ui_QHangupsConversations):
+class QHangupsConversations(QtGui.QMainWindow, Ui_QHangupsConversations):
     """Tabbed window with opened conversations"""
     def __init__(self, parent=None):
         super().__init__(parent)

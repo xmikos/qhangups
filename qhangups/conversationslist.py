@@ -6,7 +6,7 @@ from hangups.ui.utils import get_conv_name
 from qhangups.ui_qhangupsconversationslist import Ui_QHangupsConversationsList
 
 
-class QHangupsConversationsList(QtGui.QDialog, Ui_QHangupsConversationsList):
+class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList):
     """Window with list of conversations"""
     def __init__(self, parent=None):
         super().__init__(parent)
