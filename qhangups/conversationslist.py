@@ -78,15 +78,25 @@ class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList)
         self.conv_list = None
         self.set_status(self.tr("Disconnected"))
 
-    def showEvent(self, event):
-        """Restore window geometry when window is displayed"""
+    def save_geometry(self):
+        """Save window position and size"""
+        settings = QtCore.QSettings()
+        settings.setValue("conversationslist_geometry", self.saveGeometry())
+
+    def restore_geometry(self):
+        """Restore window position and size from saved values"""
         settings = QtCore.QSettings()
         if settings.value("conversationslist_geometry"):
             self.restoreGeometry(settings.value("conversationslist_geometry"))
+
+    def showEvent(self, event):
+        """Restore window geometry when window is displayed"""
+        # If we don't use single-shot timer, position is not restored
+        # correctly from minimized state on Windows
+        QtCore.QTimer.singleShot(0, self.restore_geometry)
         super().showEvent(event)
 
     def hideEvent(self, event):
         """Save window geometry when window is hidden"""
-        settings = QtCore.QSettings()
-        settings.setValue("conversationslist_geometry", self.saveGeometry())
+        self.save_geometry()
         super().hideEvent(event)
