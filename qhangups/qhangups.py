@@ -284,17 +284,20 @@ class QHangupsMainWidget(QtGui.QWidget):
             self.messages_dialog.raise_()
             self.messages_dialog.activateWindow()
 
+    @asyncio.coroutine
     def on_connect(self, initial_data):
         """Handle connecting for the first time (callback)"""
         print('Connected')
-        self.user_list = hangups.UserList(self.client,
-                                          initial_data.self_entity,
-                                          initial_data.entities,
-                                          initial_data.conversation_participants)
-        self.conv_list = hangups.ConversationList(self.client,
-                                                  initial_data.conversation_states,
-                                                  self.user_list,
-                                                  initial_data.sync_timestamp)
+        self._user_list = yield from hangups.build_user_list(
+            self.client,
+            initial_data
+        )
+        self._conv_list = hangups.ConversationList(
+            self.client,
+            initial_data.conversation_states,
+            self.user_list,
+            initial_data.sync_timestamp
+        )
         self.conv_list.on_event.add_observer(self.on_event)
 
         # Setup notifications
@@ -307,6 +310,7 @@ class QHangupsMainWidget(QtGui.QWidget):
         self.conversations_dialog.init_conversations(self.client, self.conv_list)
         self.conversations_dialog.show()
 
+    @asyncio.coroutine
     def on_event(self, conv_event):
         """Open conversation tab for new messages when they arrive (callback)"""
         if isinstance(conv_event, hangups.ChatMessageEvent):
