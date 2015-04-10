@@ -288,11 +288,11 @@ class QHangupsMainWidget(QtGui.QWidget):
     def on_connect(self, initial_data):
         """Handle connecting for the first time (callback)"""
         print('Connected')
-        self._user_list = yield from hangups.build_user_list(
+        self.user_list = yield from hangups.build_user_list(
             self.client,
             initial_data
         )
-        self._conv_list = hangups.ConversationList(
+        self.conv_list = hangups.ConversationList(
             self.client,
             initial_data.conversation_states,
             self.user_list,
