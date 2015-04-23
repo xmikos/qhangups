@@ -16,8 +16,8 @@ Requirements
 Usage
 -----
 
-Run `qhangups --help` to see all available options.
-Start QHangups by running `qhangups`.
+Run ``qhangups --help`` to see all available options.
+Start QHangups by running ``qhangups``.
 
 The first time you start QHangups, you will be prompted to log into your
 Google account. Your credentials will only be sent to Google, and only
@@ -26,6 +26,7 @@ try logging in through a browser first.
 
 Help
 ----
+::
 
     usage: qhangups [-h] [-d] [--log LOG] [--cookies COOKIES]
     

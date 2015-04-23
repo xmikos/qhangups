@@ -17,4 +17,16 @@ setup(name="QHangups",
       data_files=[("share/applications", ["qhangups.desktop"]),
                   ("share/pixmaps", ["qhangups.png"])],
       scripts=["scripts/qhangups"],
-      requires=["hangups", "appdirs", "asyncio", "PyQt4", "Quamash"])
+      requires=["hangups", "appdirs", "asyncio", "PyQt4", "Quamash"],
+      classifiers=[
+          'Development Status :: 4 - Beta',
+          'Environment :: MacOS X',
+          'Environment :: Win32 (MS Windows)',
+          'Environment :: X11 Applications :: Qt',
+          'Intended Audience :: End Users/Desktop',
+          'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python :: 3',
+          'Topic :: Communications :: Chat'
+      ])

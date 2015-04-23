@@ -6,7 +6,8 @@
 PY_LIBS_DIR="libs"
 
 create_link() {
-    ln -sf "$PY_LIBS_DIR/$1/$1" "$1"
+    rm -f "$1"
+    ln -s "$PY_LIBS_DIR/$1/$1" "$1"
 }
 
 sync_git() {
@@ -55,6 +56,7 @@ sync_git https://github.com/ActiveState/appdirs appdirs.py
 sync_git https://github.com/KeepSafe/aiohttp aiohttp
 sync_git https://github.com/wardi/urwid.git urwid
 sync_git https://github.com/jmcarp/robobrowser robobrowser
+sync_git https://github.com/xmikos/reparser.git reparser.py
 sync_git https://github.com/mitsuhiko/werkzeug werkzeug
 sync_git https://github.com/kennethreitz/requests requests
 sync_bzr lp:beautifulsoup bs4

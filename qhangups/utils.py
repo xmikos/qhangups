@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 def text_to_segments(text):
     """Create list of ChatMessageSegments from text"""
-    return list(hangups.ChatMessageSegment.from_str(text))
+    return hangups.ChatMessageSegment.from_str(text)
 
 
 def segment_to_html(segment):
