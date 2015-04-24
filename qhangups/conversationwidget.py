@@ -97,7 +97,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
             </html>"""
         )
 
-    def add_message(self, timestamp, text, username=None, message_id=None):
+    def add_message(self, timestamp, text, username=None, user_id=None, message_id=None):
         """Add new message to list of messages"""
         # Check for already existing messages (so we avoid showing duplicates)
         if message_id is not None and message_id in self.messages_id_list:
@@ -106,9 +106,12 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
             self.messages_id_list.append(message_id)
 
         datestr = "%d.%m. %H:%M" if timestamp.astimezone(tz=None).date() < datetime.date.today() else "%H:%M"
-        message = "<b>{}{}:</b><br>\n{}<br>\n".format(timestamp.astimezone(tz=None).strftime(datestr),
-                                                      " | {}".format(username) if username is not None else "",
-                                                      text)
+        link = "https://plus.google.com/u/0/{}/about".format(user_id) if user_id else ""
+        message = ("<b>{}{}:</b><br>\n{}<br>\n").format(
+            timestamp.astimezone(tz=None).strftime(datestr),
+            """ | <a href="{}">{}</a>""".format(link, username) if username is not None else "",
+            text
+        )
         doc = self.messagesWebView.page().mainFrame().documentElement()
         doc.findFirst("div[id=messages]").appendInside(
             """<div class="message">{}</div>""".format(message)
@@ -223,7 +226,8 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
 
     def handle_message(self, conv_event, user, set_unread=True):
         """Handle received chat message"""
-        self.add_message(conv_event.timestamp, message_to_html(conv_event), user.full_name, conv_event.id_)
+        self.add_message(conv_event.timestamp, message_to_html(conv_event),
+                         user.full_name, user.id_.chat_id, conv_event.id_)
         # Update the count of unread messages.
         if not user.is_self and set_unread and not self.is_current():
             self.num_unread_local += 1
@@ -234,7 +238,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
             text = '<i>*** cleared the conversation name ***</i>'
         else:
             text = '<i>*** renamed the conversation to {} ***</i>'.format(conv_event.new_name)
-        self.add_message(conv_event.timestamp, text, user.full_name, conv_event.id_)
+        self.add_message(conv_event.timestamp, text, user.full_name, user.id_.chat_id, conv_event.id_)
 
     def handle_membership_change(self, conv_event, user):
         """Handle received membership change event"""
@@ -243,9 +247,9 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         if conv_event.type_ == hangups.MembershipChangeType.JOIN:
             self.add_message(conv_event.timestamp,
                              '<i>*** added {} to the conversation ***</i>'.format(names),
-                             user.full_name, conv_event.id_)
+                             user.full_name, user.id_.chat_id, conv_event.id_)
         else:
             for name in names:
                 self.add_message(conv_event.timestamp,
                                  '<i>*** left the conversation ***</i>',
-                                 user.full_name, conv_event.id_)
+                                 user.full_name, user.id_.chat_id, conv_event.id_)
