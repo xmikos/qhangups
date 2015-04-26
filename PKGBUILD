@@ -1,6 +1,6 @@
 # Maintainer: Michal Krenek (Mikos) <m.krenek@gmail.com>
 pkgname=qhangups
-pkgver=1.5.2
+pkgver=1.5.3
 pkgrel=1
 pkgdesc="Alternative client for Google Hangouts written in PyQt"
 arch=('any')
@@ -17,6 +17,7 @@ build() {
 
 package() {
   cd "$srcdir/$pkgname-$pkgver"
+  sed -i 's/^.*asyncio.*$//' setup.py
   python setup.py install --root="$pkgdir"
 }
 
