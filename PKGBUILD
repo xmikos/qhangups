@@ -1,6 +1,6 @@
 # Maintainer: Michal Krenek (Mikos) <m.krenek@gmail.com>
 pkgname=qhangups
-pkgver=1.5.1
+pkgver=1.5.2
 pkgrel=1
 pkgdesc="Alternative client for Google Hangouts written in PyQt"
 arch=('any')
