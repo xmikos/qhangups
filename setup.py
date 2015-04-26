@@ -33,7 +33,6 @@ setup(
     install_requires=[
         "hangups>=0.2.7",
         "appdirs",
-        "PyQt4",   # PyQt is incompatible with pip, must be installed manually
         "Quamash",
         "asyncio"  # Only needed for backward compatibility with Python 3.3
     ],
