@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="2.0" language="cs_CZ" sourcelanguage="">
 <context>
+    <name>QHangupsBrowser</name>
+    <message>
+        <location filename="ui_qhangupsbrowser.py" line="41"/>
+        <source>QHangups - Browser</source>
+        <translation>QHangups - Prohlížeč</translation>
+    </message>
+</context>
+<context>
     <name>QHangupsConversationWidget</name>
     <message>
-        <location filename="conversationwidget.py" line="188"/>
+        <location filename="conversationwidget.py" line="192"/>
         <source>QHangups - Warning</source>
         <translation>QHangups - Varování</translation>
     </message>
     <message>
-        <location filename="conversationwidget.py" line="188"/>
+        <location filename="conversationwidget.py" line="192"/>
         <source>Failed to send message!</source>
         <translation>Zprávu se nepodařilo odeslat!</translation>
     </message>
@@ -44,17 +52,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="conversationslist.py" line="77"/>
+        <location filename="conversationslist.py" line="79"/>
         <source>Disconnected</source>
         <translation>Odpojeno</translation>
     </message>
     <message>
-        <location filename="conversationslist.py" line="63"/>
+        <location filename="conversationslist.py" line="65"/>
         <source>Reconnecting...</source>
         <translation>Opakuji připojení...</translation>
     </message>
     <message>
-        <location filename="conversationslist.py" line="71"/>
+        <location filename="conversationslist.py" line="73"/>
         <source>Connecting...</source>
         <translation>Připojuji se...</translation>
     </message>
@@ -62,32 +70,32 @@
 <context>
     <name>QHangupsMainWidget</name>
     <message>
-        <location filename="qhangups.py" line="114"/>
+        <location filename="__main__.py" line="115"/>
         <source>&amp;Connect</source>
         <translation>&amp;Připojit</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="115"/>
+        <location filename="__main__.py" line="116"/>
         <source>&amp;Disconnect</source>
         <translation>&amp;Odpojit</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="116"/>
+        <location filename="__main__.py" line="117"/>
         <source>S&amp;ettings ...</source>
         <translation>Na&amp;stavení ...</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="117"/>
+        <location filename="__main__.py" line="118"/>
         <source>A&amp;bout ...</source>
         <translation>O p&amp;rogramu ...</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="118"/>
+        <location filename="__main__.py" line="119"/>
         <source>&amp;Quit</source>
         <translation>U&amp;končit</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="126"/>
+        <location filename="__main__.py" line="127"/>
         <source>QHangups - Warning</source>
         <translation>QHangups - Varování</translation>
     </message>
@@ -97,59 +105,49 @@
         <translation type="obsolete">Byli jste odpojeni od Google Hangouts!</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="201"/>
+        <location filename="__main__.py" line="187"/>
         <source>About</source>
         <translation>O programu</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="201"/>
+        <location filename="__main__.py" line="187"/>
         <source>QHangups {}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="259"/>
+        <location filename="__main__.py" line="245"/>
         <source>QHangups - Quit</source>
         <translation>QHangups - Ukončení</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="259"/>
+        <location filename="__main__.py" line="245"/>
         <source>You are still connected to Google Hangouts. Do you really want to quit QHangups?</source>
         <translation>Jste stále připojeni ke Google Hangouts. Chcete opravdu ukončit QHangups?</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="126"/>
+        <location filename="__main__.py" line="127"/>
         <source>Google login failed!</source>
         <translation>Přihlášení k serveru Google selhalo!</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="132"/>
-        <source>QHangups - Email</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="qhangups.py" line="132"/>
-        <source>Email:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="qhangups.py" line="136"/>
+        <location filename="__main__.py" line="136"/>
         <source>QHangups - Password</source>
-        <translation>QHangups - Heslo</translation>
+        <translation type="obsolete">QHangups - Heslo</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="136"/>
+        <location filename="__main__.py" line="136"/>
         <source>Password:</source>
-        <translation>Heslo:</translation>
+        <translation type="obsolete">Heslo:</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="148"/>
-        <source>QHangups - PIN</source>
-        <translation></translation>
+        <location filename="__main__.py" line="134"/>
+        <source>QHangups - Authorization</source>
+        <translation>QHangups - Autorizace</translation>
     </message>
     <message>
-        <location filename="qhangups.py" line="148"/>
-        <source>PIN:</source>
-        <translation></translation>
+        <location filename="__main__.py" line="134"/>
+        <source>Authorization code:</source>
+        <translation>Autorizační kód:</translation>
     </message>
 </context>
 <context>

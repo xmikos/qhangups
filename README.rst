@@ -19,21 +19,23 @@ Usage
 Run ``qhangups --help`` to see all available options.
 Start QHangups by running ``qhangups``.
 
-The first time you start QHangups, you will be prompted to log into your
-Google account. Your credentials will only be sent to Google, and only
-session cookies will be stored locally. If you have trouble logging in,
-try logging in through a browser first.
+The first time you start QHangups, you will be presented with simple web
+browser window where you log into your Google account. After logging in and
+clicking on "SIGN IN", you should see authorization code. Copy this code
+to clipboard, close browser window and paste this code into authorization form.
+Your credentials will only be sent to Google, and only OAuth 2 refresh token
+will be stored locally.
 
 Help
 ----
 ::
 
-    usage: qhangups [-h] [-d] [--log LOG] [--cookies COOKIES]
+    usage: qhangups [-h] [-d] [--log LOG] [--token TOKEN]
     
     optional arguments:
-      -h, --help         show this help message and exit
-      -d, --debug        log detailed debugging messages (default: False)
-      --log LOG          log file path (default:
-                         ~/.local/share/QHangups/hangups.log)
-      --cookies COOKIES  cookie storage path (default:
-                         ~/.local/share/QHangups/cookies.json)
+      -h, --help     show this help message and exit
+      -d, --debug    log detailed debugging messages (default: False)
+      --log LOG      log file path (default:
+                     ~/.local/share/QHangups/hangups.log)
+      --token TOKEN  OAuth refresh token storage path (default:
+                     ~/.local/share/QHangups/refresh_token.txt)

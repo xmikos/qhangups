@@ -23,6 +23,7 @@ from qhangups.version import __version__
 from qhangups.settings import QHangupsSettings
 from qhangups.conversations import QHangupsConversations
 from qhangups.conversationslist import QHangupsConversationsList
+from qhangups.browser import QHangupsBrowser
 
 
 # Basic settings
@@ -38,11 +39,11 @@ class QHangupsMainWidget(QtGui.QWidget):
     startHangups = QtCore.pyqtSignal()
     stopHangups = QtCore.pyqtSignal()
 
-    def __init__(self, cookies_path, parent=None):
+    def __init__(self, refresh_token_path, parent=None):
         super().__init__(parent)
         self.set_language()
 
-        self.cookies_path = cookies_path
+        self.refresh_token_path = refresh_token_path
         self.hangups_running = False
         self.client = None
 
@@ -117,10 +118,10 @@ class QHangupsMainWidget(QtGui.QWidget):
         self.aboutAction.setText(self.tr("A&bout ..."))
         self.quitAction.setText(self.tr("&Quit"))
 
-    def login(self, cookies_path):
+    def login(self, refresh_token_path):
         """Login to Google account"""
         try:
-            cookies = hangups.auth.get_auth(self.get_credentials, self.get_pin, cookies_path)
+            cookies = hangups.auth.get_auth(self.get_credentials, refresh_token_path)
             return cookies
         except hangups.GoogleAuthError:
             QtGui.QMessageBox.warning(self, self.tr("QHangups - Warning"),
@@ -128,30 +129,15 @@ class QHangupsMainWidget(QtGui.QWidget):
             return False
 
     def get_credentials(self):
-        """Ask user for email and password (callback)"""
-        email, ok = QtGui.QInputDialog.getText(self, self.tr("QHangups - Email"),
-                                               self.tr("Email:"),
-                                               QtGui.QLineEdit.Normal)
-        if ok:
-            password, ok = QtGui.QInputDialog.getText(self, self.tr("QHangups - Password"),
-                                                      self.tr(u"Password:"),
-                                                      QtGui.QLineEdit.Password)
-            if ok:
-                return (email, password)
-            else:
-                return False
+        """Ask user for OAuth 2 authorization code"""
+        browser = QHangupsBrowser(hangups.auth.OAUTH2_LOGIN_URL, self).exec_()
+        code, ok = QtGui.QInputDialog.getText(self, self.tr("QHangups - Authorization"),
+                                              self.tr("Authorization code:"),
+                                              QtGui.QLineEdit.Normal)
+        if ok and code:
+            return code
         else:
-            return False
-
-    def get_pin(self):
-        """Ask user for second factor PIN (callback)"""
-        pin, ok = QtGui.QInputDialog.getText(self, self.tr("QHangups - PIN"),
-                                             self.tr("PIN:"),
-                                             QtGui.QLineEdit.Password)
-        if ok:
-            return pin
-        else:
-            return False
+            return None
 
     def update_status(self):
         """Update GUI according to Hangups status"""
@@ -166,7 +152,7 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def hangups_start(self):
         """Connect to Hangouts"""
-        cookies = self.login(self.cookies_path)
+        cookies = self.login(self.refresh_token_path)
         if cookies:
             self.startHangups.emit()
 
@@ -321,7 +307,7 @@ def main():
     # Build default paths for files.
     dirs = appdirs.AppDirs('QHangups', 'QHangups')
     default_log_path = os.path.join(dirs.user_data_dir, 'hangups.log')
-    default_cookies_path = os.path.join(dirs.user_data_dir, 'cookies.json')
+    default_token_path = os.path.join(dirs.user_data_dir, 'refresh_token.txt')
 
     # Setup command line argument parser
     parser = argparse.ArgumentParser(prog='qhangups',
@@ -330,12 +316,12 @@ def main():
                         help='log detailed debugging messages')
     parser.add_argument('--log', default=default_log_path,
                         help='log file path')
-    parser.add_argument('--cookies', default=default_cookies_path,
-                        help='cookie storage path')
+    parser.add_argument('--token', default=default_token_path,
+                        help='OAuth refresh token storage path')
     args = parser.parse_args()
 
     # Create all necessary directories.
-    for path in [args.log, args.cookies]:
+    for path in [args.log, args.token]:
         directory = os.path.dirname(path)
         if directory and not os.path.isdir(directory):
             try:
@@ -364,7 +350,7 @@ def main():
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
     with loop:
-        widget = QHangupsMainWidget(args.cookies)
+        widget = QHangupsMainWidget(args.token)
         loop.run_forever()
 
 

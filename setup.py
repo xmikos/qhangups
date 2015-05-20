@@ -31,7 +31,7 @@ setup(
         ],
     },
     install_requires=[
-        "hangups>=0.2.7",
+        "hangups>=0.2.8",
         "appdirs",
         "Quamash",
         "asyncio"  # Only needed for backward compatibility with Python 3.3
