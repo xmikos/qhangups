@@ -1,10 +1,10 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from qhangups.conversationwidget import QHangupsConversationWidget
 from qhangups.ui_qhangupsconversations import Ui_QHangupsConversations
 
 
-class QHangupsConversations(QtGui.QMainWindow, Ui_QHangupsConversations):
+class QHangupsConversations(QtWidgets.QMainWindow, Ui_QHangupsConversations):
     """Tabbed window with opened conversations"""
     def __init__(self, controller, parent=None):
         super().__init__(parent)

@@ -3,7 +3,7 @@
 <context>
     <name>QHangupsBrowser</name>
     <message>
-        <location filename="ui_qhangupsbrowser.py" line="41"/>
+        <location filename="ui_qhangupsbrowser.py" line="28"/>
         <source>QHangups - Browser</source>
         <translation>QHangups - Prohlížeč</translation>
     </message>
@@ -21,17 +21,17 @@
         <translation>Zprávu se nepodařilo odeslat!</translation>
     </message>
     <message>
-        <location filename="ui_qhangupsconversationwidget.py" line="67"/>
+        <location filename="ui_qhangupsconversationwidget.py" line="54"/>
         <source>QHangups - Conversation</source>
         <translation>QHangups - Konverzace</translation>
     </message>
     <message>
-        <location filename="ui_qhangupsconversationwidget.py" line="68"/>
+        <location filename="ui_qhangupsconversationwidget.py" line="55"/>
         <source>Send</source>
         <translation>Odeslat</translation>
     </message>
     <message>
-        <location filename="ui_qhangupsconversationwidget.py" line="69"/>
+        <location filename="ui_qhangupsconversationwidget.py" line="56"/>
         <source>Ctrl+Return</source>
         <translation></translation>
     </message>
@@ -39,7 +39,7 @@
 <context>
     <name>QHangupsConversations</name>
     <message>
-        <location filename="ui_qhangupsconversations.py" line="54"/>
+        <location filename="ui_qhangupsconversations.py" line="41"/>
         <source>QHangups - Conversations</source>
         <translation>QHangups - Konverzace</translation>
     </message>
@@ -47,7 +47,7 @@
 <context>
     <name>QHangupsConversationsList</name>
     <message>
-        <location filename="ui_qhangupsconversationslist.py" line="51"/>
+        <location filename="ui_qhangupsconversationslist.py" line="38"/>
         <source>QHangups</source>
         <translation></translation>
     </message>
@@ -153,27 +153,27 @@
 <context>
     <name>QHangupsSettings</name>
     <message>
-        <location filename="ui_qhangupssettings.py" line="65"/>
+        <location filename="ui_qhangupssettings.py" line="52"/>
         <source>QHangups - Settings</source>
         <translation>QHangups - Nastavení</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="69"/>
+        <location filename="ui_qhangupssettings.py" line="56"/>
         <source>Language:</source>
         <translation>Jazyk:</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="66"/>
+        <location filename="ui_qhangupssettings.py" line="53"/>
         <source>Send client active notifications</source>
         <translation>Odesílat notifikace o aktivitě klienta</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="67"/>
+        <location filename="ui_qhangupssettings.py" line="54"/>
         <source>Send read state notifications</source>
         <translation>Odesílat notifikace o přečtení zpráv</translation>
     </message>
     <message>
-        <location filename="ui_qhangupssettings.py" line="68"/>
+        <location filename="ui_qhangupssettings.py" line="55"/>
         <source>Press Enter to send message (default is Ctrl+Enter)</source>
         <translation>Tlačítko Enter odešle zprávu (výchozí zkratka je Ctrl+Enter)</translation>
     </message>

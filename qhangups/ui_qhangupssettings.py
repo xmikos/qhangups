@@ -2,59 +2,45 @@
 
 # Form implementation generated from reading ui file 'qhangups/qhangupssettings.ui'
 #
-# Created: Wed May 20 12:38:46 2015
-#      by: PyQt4 UI code generator 4.11.3
+# Created: Mon Jun 15 11:28:36 2015
+#      by: PyQt5 UI code generator 5.4
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_QHangupsSettings(object):
     def setupUi(self, QHangupsSettings):
-        QHangupsSettings.setObjectName(_fromUtf8("QHangupsSettings"))
+        QHangupsSettings.setObjectName("QHangupsSettings")
         QHangupsSettings.resize(370, 140)
-        self.gridLayout = QtGui.QGridLayout(QHangupsSettings)
-        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.sendClientActiveCheckBox = QtGui.QCheckBox(QHangupsSettings)
-        self.sendClientActiveCheckBox.setObjectName(_fromUtf8("sendClientActiveCheckBox"))
+        self.gridLayout = QtWidgets.QGridLayout(QHangupsSettings)
+        self.gridLayout.setObjectName("gridLayout")
+        self.sendClientActiveCheckBox = QtWidgets.QCheckBox(QHangupsSettings)
+        self.sendClientActiveCheckBox.setObjectName("sendClientActiveCheckBox")
         self.gridLayout.addWidget(self.sendClientActiveCheckBox, 0, 0, 1, 2)
-        self.sendReadStateCheckBox = QtGui.QCheckBox(QHangupsSettings)
-        self.sendReadStateCheckBox.setObjectName(_fromUtf8("sendReadStateCheckBox"))
+        self.sendReadStateCheckBox = QtWidgets.QCheckBox(QHangupsSettings)
+        self.sendReadStateCheckBox.setObjectName("sendReadStateCheckBox")
         self.gridLayout.addWidget(self.sendReadStateCheckBox, 1, 0, 1, 2)
-        self.enterSendMessageCheckBox = QtGui.QCheckBox(QHangupsSettings)
-        self.enterSendMessageCheckBox.setObjectName(_fromUtf8("enterSendMessageCheckBox"))
+        self.enterSendMessageCheckBox = QtWidgets.QCheckBox(QHangupsSettings)
+        self.enterSendMessageCheckBox.setObjectName("enterSendMessageCheckBox")
         self.gridLayout.addWidget(self.enterSendMessageCheckBox, 2, 0, 1, 2)
-        self.label = QtGui.QLabel(QHangupsSettings)
-        self.label.setObjectName(_fromUtf8("label"))
+        self.label = QtWidgets.QLabel(QHangupsSettings)
+        self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 3, 0, 1, 1)
-        self.languageComboBox = QtGui.QComboBox(QHangupsSettings)
-        self.languageComboBox.setObjectName(_fromUtf8("languageComboBox"))
+        self.languageComboBox = QtWidgets.QComboBox(QHangupsSettings)
+        self.languageComboBox.setObjectName("languageComboBox")
         self.gridLayout.addWidget(self.languageComboBox, 3, 1, 1, 1)
-        spacerItem = QtGui.QSpacerItem(47, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(47, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 3, 2, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(QHangupsSettings)
+        self.buttonBox = QtWidgets.QDialogButtonBox(QHangupsSettings)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 4, 1, 1, 2)
 
         self.retranslateUi(QHangupsSettings)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), QHangupsSettings.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), QHangupsSettings.reject)
+        self.buttonBox.accepted.connect(QHangupsSettings.accept)
+        self.buttonBox.rejected.connect(QHangupsSettings.reject)
         QtCore.QMetaObject.connectSlotsByName(QHangupsSettings)
         QHangupsSettings.setTabOrder(self.sendClientActiveCheckBox, self.sendReadStateCheckBox)
         QHangupsSettings.setTabOrder(self.sendReadStateCheckBox, self.enterSendMessageCheckBox)
@@ -62,9 +48,10 @@ class Ui_QHangupsSettings(object):
         QHangupsSettings.setTabOrder(self.languageComboBox, self.buttonBox)
 
     def retranslateUi(self, QHangupsSettings):
-        QHangupsSettings.setWindowTitle(_translate("QHangupsSettings", "QHangups - Settings", None))
-        self.sendClientActiveCheckBox.setText(_translate("QHangupsSettings", "Send client active notifications", None))
-        self.sendReadStateCheckBox.setText(_translate("QHangupsSettings", "Send read state notifications", None))
-        self.enterSendMessageCheckBox.setText(_translate("QHangupsSettings", "Press Enter to send message (default is Ctrl+Enter)", None))
-        self.label.setText(_translate("QHangupsSettings", "Language:", None))
+        _translate = QtCore.QCoreApplication.translate
+        QHangupsSettings.setWindowTitle(_translate("QHangupsSettings", "QHangups - Settings"))
+        self.sendClientActiveCheckBox.setText(_translate("QHangupsSettings", "Send client active notifications"))
+        self.sendReadStateCheckBox.setText(_translate("QHangupsSettings", "Send read state notifications"))
+        self.enterSendMessageCheckBox.setText(_translate("QHangupsSettings", "Press Enter to send message (default is Ctrl+Enter)"))
+        self.label.setText(_translate("QHangupsSettings", "Language:"))
 

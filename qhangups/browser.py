@@ -1,8 +1,9 @@
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt5 import QtCore, QtWidgets
 
 from qhangups.ui_qhangupsbrowser import Ui_QHangupsBrowser
 
-class QHangupsBrowser(QtGui.QDialog, Ui_QHangupsBrowser):
+
+class QHangupsBrowser(QtWidgets.QDialog, Ui_QHangupsBrowser):
     """Extremely simple web browser"""
     def __init__(self, url="", parent=None):
         super().__init__(parent)

@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 import hangups
 from hangups.ui.utils import get_conv_name
@@ -6,7 +6,7 @@ from hangups.ui.utils import get_conv_name
 from qhangups.ui_qhangupsconversationslist import Ui_QHangupsConversationsList
 
 
-class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList):
+class QHangupsConversationsList(QtWidgets.QMainWindow, Ui_QHangupsConversationsList):
     """Window with list of conversations"""
     def __init__(self, controller, parent=None):
         super().__init__(parent)
@@ -36,7 +36,7 @@ class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList)
     def set_status(self, status_text):
         """Display static status text instead of list of conversations"""
         self.conversationsListWidget.clear()
-        item = QtGui.QListWidgetItem(status_text)
+        item = QtWidgets.QListWidgetItem(status_text)
         item.setTextAlignment(QtCore.Qt.AlignHCenter)
         self.conversationsListWidget.addItem(item)
 
@@ -44,7 +44,7 @@ class QHangupsConversationsList(QtGui.QMainWindow, Ui_QHangupsConversationsList)
         """Update list of conversations"""
         self.conversationsListWidget.clear()
         for conv in sorted(self.conv_list.get_all(), reverse=True, key=lambda c: c.last_modified):
-            item = QtGui.QListWidgetItem(get_conv_name(conv, truncate=True))
+            item = QtWidgets.QListWidgetItem(get_conv_name(conv, truncate=True))
             item.setToolTip(get_conv_name(conv))
             item.setData(QtCore.Qt.UserRole, conv.id_)
             self.conversationsListWidget.addItem(item)

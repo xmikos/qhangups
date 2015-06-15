@@ -1,11 +1,11 @@
 import os, glob
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 from qhangups.ui_qhangupssettings import Ui_QHangupsSettings
 
 
-class QHangupsSettings(QtGui.QDialog, Ui_QHangupsSettings):
+class QHangupsSettings(QtWidgets.QDialog, Ui_QHangupsSettings):
     """Settings dialog"""
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -47,4 +47,4 @@ class QHangupsSettings(QtGui.QDialog, Ui_QHangupsSettings):
         settings.setValue("send_read_state", self.sendReadStateCheckBox.isChecked())
         settings.setValue("enter_send_message", self.enterSendMessageCheckBox.isChecked())
         settings.setValue("language", self.languageComboBox.itemData(self.languageComboBox.currentIndex()))
-        QtGui.QDialog.accept(self)
+        QtWidgets.QDialog.accept(self)

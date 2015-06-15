@@ -2,13 +2,13 @@
 
 import sys, os, logging, argparse, asyncio, signal
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 import appdirs
 import hangups
 from hangups.ui.notify import Notifier
 
-# Force use of PyQt4 for Quamash (until we are PyQt5 compatible)
-os.environ['QUAMASH_QTIMPL'] = "PyQt4"
+# Force use of PyQt5 for Quamash
+os.environ['QUAMASH_QTIMPL'] = "PyQt5"
 
 # Fake os.name to be always "posix" when loading QEventLoop.
 # We need SelectorEventLoop on Windows because
@@ -34,7 +34,7 @@ translator = QtCore.QTranslator()
 qt_translator = QtCore.QTranslator()
 
 
-class QHangupsMainWidget(QtGui.QWidget):
+class QHangupsMainWidget(QtWidgets.QWidget):
     """QHangups main widget (icon in system tray)"""
     startHangups = QtCore.pyqtSignal()
     stopHangups = QtCore.pyqtSignal()
@@ -77,20 +77,20 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def create_actions(self):
         """Create actions and connect relevant signals"""
-        self.startAction = QtGui.QAction(self)
+        self.startAction = QtWidgets.QAction(self)
         self.startAction.triggered.connect(self.hangups_start)
-        self.stopAction = QtGui.QAction(self)
+        self.stopAction = QtWidgets.QAction(self)
         self.stopAction.triggered.connect(self.hangups_stop)
-        self.settingsAction = QtGui.QAction(self)
+        self.settingsAction = QtWidgets.QAction(self)
         self.settingsAction.triggered.connect(self.settings)
-        self.aboutAction = QtGui.QAction(self)
+        self.aboutAction = QtWidgets.QAction(self)
         self.aboutAction.triggered.connect(self.about)
-        self.quitAction = QtGui.QAction(self)
+        self.quitAction = QtWidgets.QAction(self)
         self.quitAction.triggered.connect(self.quit)
 
     def create_menu(self):
         """Create menu and add items to it"""
-        self.trayIconMenu = QtGui.QMenu(self)
+        self.trayIconMenu = QtWidgets.QMenu(self)
         self.trayIconMenu.addAction(self.startAction)
         self.trayIconMenu.addAction(self.stopAction)
         self.trayIconMenu.addSeparator()
@@ -101,7 +101,7 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def create_icon(self):
         """Create system tray icon"""
-        self.trayIcon = QtGui.QSystemTrayIcon(self)
+        self.trayIcon = QtWidgets.QSystemTrayIcon(self)
         self.iconActive = QtGui.QIcon("{}/qhangups.svg".format(os.path.dirname(os.path.abspath(__file__))))
         self.iconDisabled = QtGui.QIcon("{}/qhangups_disabled.svg".format(os.path.dirname(os.path.abspath(__file__))))
         self.trayIcon.activated.connect(self.icon_activated)
@@ -124,16 +124,16 @@ class QHangupsMainWidget(QtGui.QWidget):
             cookies = hangups.auth.get_auth(self.get_credentials, refresh_token_path)
             return cookies
         except hangups.GoogleAuthError:
-            QtGui.QMessageBox.warning(self, self.tr("QHangups - Warning"),
-                                      self.tr("Google login failed!"))
+            QtWidgets.QMessageBox.warning(self, self.tr("QHangups - Warning"),
+                                          self.tr("Google login failed!"))
             return False
 
     def get_credentials(self):
         """Ask user for OAuth 2 authorization code"""
         browser = QHangupsBrowser(hangups.auth.OAUTH2_LOGIN_URL, self).exec_()
-        code, ok = QtGui.QInputDialog.getText(self, self.tr("QHangups - Authorization"),
-                                              self.tr("Authorization code:"),
-                                              QtGui.QLineEdit.Normal)
+        code, ok = QtWidgets.QInputDialog.getText(self, self.tr("QHangups - Authorization"),
+                                                  self.tr("Authorization code:"),
+                                                  QtWidgets.QLineEdit.Normal)
         if ok and code:
             return code
         else:
@@ -184,7 +184,7 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def about(self):
         """Show About dialog"""
-        QtGui.QMessageBox.information(self, self.tr("About"), self.tr("QHangups {}".format(__version__)))
+        QtWidgets.QMessageBox.information(self, self.tr("About"), self.tr("QHangups {}".format(__version__)))
 
     def settings(self):
         """Show Settings dialog"""
@@ -218,7 +218,7 @@ class QHangupsMainWidget(QtGui.QWidget):
 
     def icon_activated(self, reason):
         """Connect or disconnect from Hangouts by double-click on tray icon"""
-        if reason == QtGui.QSystemTrayIcon.Trigger or reason == QtGui.QSystemTrayIcon.DoubleClick:
+        if reason == QtWidgets.QSystemTrayIcon.Trigger or reason == QtWidgets.QSystemTrayIcon.DoubleClick:
             if self.icon_doubleclick_timer.isActive():
                 self.icon_doubleclick_timer.stop()
                 if self.hangups_running:
@@ -226,7 +226,7 @@ class QHangupsMainWidget(QtGui.QWidget):
                 else:
                     self.hangups_start()
             else:
-                self.icon_doubleclick_timer.start(QtGui.qApp.doubleClickInterval())
+                self.icon_doubleclick_timer.start(QtWidgets.qApp.doubleClickInterval())
 
     def icon_doubleclick_timeout(self):
         """Open or close list of conversations after single-click on tray icon"""
@@ -242,17 +242,18 @@ class QHangupsMainWidget(QtGui.QWidget):
         """Quit QHangups"""
         if self.hangups_running:
             if not force:
-                reply = QtGui.QMessageBox.question(self, self.tr("QHangups - Quit"),
-                                                   self.tr("You are still connected to Google Hangouts. "
-                                                           "Do you really want to quit QHangups?"),
-                                                   QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-                if reply != QtGui.QMessageBox.Yes:
+                reply = QtWidgets.QMessageBox.question(self, self.tr("QHangups - Quit"),
+                                                       self.tr("You are still connected to Google Hangouts. "
+                                                               "Do you really want to quit QHangups?"),
+                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                                       QtWidgets.QMessageBox.No)
+                if reply != QtWidgets.QMessageBox.Yes:
                     return
             self.hangups_stop()
 
         loop = asyncio.get_event_loop()
         loop.stop()
-        # QtGui.qApp.quit()
+        # QtWidgets.qApp.quit()
 
     def changeEvent(self, event):
         """Handle LanguageChange event"""
@@ -338,7 +339,7 @@ def main():
     # logging.getLogger('hangups').setLevel(logging.WARNING)
 
     # Setup QApplication
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     app.setOrganizationName("QHangups")
     app.setOrganizationDomain("qhangups.eutopia.cz")
     app.setApplicationName("QHangups")

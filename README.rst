@@ -7,7 +7,7 @@ Requirements
 ------------
 
 - Python >= 3.3
-- PyQt >= 4.5
+- PyQt >= 5
 - Quamash (https://github.com/harvimt/quamash)
 - hangups (https://github.com/tdryer/hangups)
 - appdirs (https://github.com/ActiveState/appdirs)

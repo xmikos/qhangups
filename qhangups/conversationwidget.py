@@ -1,6 +1,6 @@
 import datetime, asyncio
 
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKitWidgets
 
 import hangups
 from hangups.ui.utils import get_conv_name
@@ -9,7 +9,7 @@ from qhangups.utils import text_to_segments, message_to_html
 from qhangups.ui_qhangupsconversationwidget import Ui_QHangupsConversationWidget
 
 
-class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
+class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidget):
     """Conversation tab"""
     def __init__(self, tab_parent, client, conv, parent=None):
         super().__init__(parent)
@@ -78,7 +78,7 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
     def init_messages(self):
         """Initialize QWebView with list of messages"""
         self.messagesWebView.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
-        self.messagesWebView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
+        self.messagesWebView.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
         #self.messagesWebView.settings().setAttribute(QtWebKit.QWebSettings.LocalContentCanAccessRemoteUrls, True)
         self.messagesWebView.setHtml(
             """<!doctype html>
@@ -188,8 +188,8 @@ class QHangupsConversationWidget(QtGui.QWidget, Ui_QHangupsConversationWidget):
         try:
             future.result()
         except hangups.NetworkError:
-            QtGui.QMessageBox.warning(self, self.tr("QHangups - Warning"),
-                                      self.tr("Failed to send message!"))
+            QtWidgets.QMessageBox.warning(self, self.tr("QHangups - Warning"),
+                                          self.tr("Failed to send message!"))
         else:
             self.messageTextEdit.clear()
         finally:
