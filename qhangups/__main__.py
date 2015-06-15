@@ -104,6 +104,10 @@ class QHangupsMainWidget(QtWidgets.QWidget):
         self.trayIcon = QtWidgets.QSystemTrayIcon(self)
         self.iconActive = QtGui.QIcon("{}/qhangups.svg".format(os.path.dirname(os.path.abspath(__file__))))
         self.iconDisabled = QtGui.QIcon("{}/qhangups_disabled.svg".format(os.path.dirname(os.path.abspath(__file__))))
+        # Workaround for Plasma 5 not showing SVG icons
+        self.iconActive = QtGui.QIcon(self.iconActive.pixmap(48, 48))
+        self.iconDisabled = QtGui.QIcon(self.iconDisabled.pixmap(48, 48))
+
         self.trayIcon.activated.connect(self.icon_activated)
         self.trayIcon.setContextMenu(self.trayIconMenu)
         self.trayIcon.setIcon(self.iconDisabled)
