@@ -52,11 +52,20 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
             future.add_done_callback(lambda future: future.result())
 
     def eventFilter(self, obj, event):
-        """Event filter for catching Enter key press and sending message"""
-        if self.enter_send_message and obj is self.messageTextEdit:
-            if event.type() == QtCore.QEvent.KeyPress and event.key() == QtCore.Qt.Key_Return:
-                self.on_send_clicked()
-                return True
+        """Event filter for catching Enter / Ctrl+Enter key press and sending message"""
+        if obj is self.messageTextEdit and event.type() == QtCore.QEvent.KeyPress:
+            if self.enter_send_message:
+                if event.key() == QtCore.Qt.Key_Return and event.modifiers() == QtCore.Qt.ControlModifier:
+                    self.messageTextEdit.insertPlainText('\n')
+                    return True
+                elif event.key() == QtCore.Qt.Key_Return:
+                    self.on_send_clicked()
+                    return True
+            else:
+                # Always catch Ctrl+Return (Ctrl+Return shortcut on Send button doesn't work in Qt 5)
+                if event.key() == QtCore.Qt.Key_Return and event.modifiers() == QtCore.Qt.ControlModifier:
+                    self.on_send_clicked()
+                    return True
         return super().eventFilter(obj, event)
 
     def get_num_unread(self, local_unread=False):
