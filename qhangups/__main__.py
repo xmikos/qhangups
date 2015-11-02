@@ -276,18 +276,12 @@ class QHangupsMainWidget(QtWidgets.QWidget):
             self.messages_dialog.activateWindow()
 
     @asyncio.coroutine
-    def on_connect(self, initial_data):
+    def on_connect(self):
         """Handle connecting for the first time (callback)"""
         print('Connected')
-        self.user_list = yield from hangups.build_user_list(
-            self.client,
-            initial_data
-        )
-        self.conv_list = hangups.ConversationList(
-            self.client,
-            initial_data.conversation_states,
-            self.user_list,
-            initial_data.sync_timestamp
+
+        self.user_list, self.conv_list = (
+            yield from hangups.build_user_conversation_list(self.client)
         )
         self.conv_list.on_event.add_observer(self.on_event)
 

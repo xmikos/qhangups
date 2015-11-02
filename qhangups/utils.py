@@ -16,18 +16,18 @@ def segment_to_html(segment):
     text = text.replace('\n', '<br>\n')
 
     message = []
-    if segment.type_ == hangups.schemas.SegmentType.TEXT:
+    if segment.type_ == hangups.hangouts_pb2.SEGMENT_TYPE_TEXT:
         message.append(text)
-    elif segment.type_ == hangups.schemas.SegmentType.LINK:
+    elif segment.type_ == hangups.hangouts_pb2.SEGMENT_TYPE_LINK:
         message.append(
             '<a href="{}">{}</a>'.format(segment.link_target if segment.link_target else text, text)
         )
-    elif segment.type_ == hangups.schemas.SegmentType.LINE_BREAK:
+    elif segment.type_ == hangups.hangouts_pb2.SEGMENT_TYPE_LINE_BREAK:
         message.append('<br>\n')
     else:
         logger.warning('Ignoring unknown chat message segment type: {}'.format(segment.type_))
 
-    if not segment.type_ == hangups.schemas.SegmentType.LINE_BREAK:
+    if not segment.type_ == hangups.hangouts_pb2.SEGMENT_TYPE_LINE_BREAK:
         for is_f, f in ((segment.is_bold, 'b'), (segment.is_italic, 'i'),
                         (segment.is_strikethrough, 's'), (segment.is_underline, 'u')):
             if is_f:

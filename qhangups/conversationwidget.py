@@ -19,6 +19,9 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         self.client = client
         self.conv = conv
         self.messages_id_list = []
+        self.is_loading = False
+        self.first_loaded = False
+        self.scroll_prev_height = None
 
         self.client.on_disconnect.add_observer(self.on_disconnect)
         self.client.on_reconnect.add_observer(self.on_reconnect)
@@ -29,6 +32,7 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         self.sendButton.clicked.connect(self.on_send_clicked)
         self.messagesWebView.page().mainFrame().contentsSizeChanged.connect(self.on_contents_size_changed)
         self.messagesWebView.page().linkClicked.connect(self.on_link_clicked)
+        self.messagesWebView.page().scrollRequested.connect(self.on_scroll_requested)
 
         settings = QtCore.QSettings()
         self.enter_send_message = settings.value("enter_send_message", False, type=bool)
@@ -42,6 +46,10 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         self.num_unread_local = 0
         for event in self.conv.events:
             self.on_event(event, set_title=False, set_unread=False)
+
+        if len(self.conv.events) < 10:
+            future = asyncio.async(self.load_events())
+            future.add_done_callback(lambda future: future.result())
 
     def eventFilter(self, obj, event):
         """Event filter for catching Enter key press and sending message"""
@@ -97,7 +105,7 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
             </html>"""
         )
 
-    def add_message(self, timestamp, text, username=None, user_id=None, message_id=None):
+    def add_message(self, timestamp, text, username=None, user_id=None, message_id=None, prepend=False):
         """Add new message to list of messages"""
         # Check for already existing messages (so we avoid showing duplicates)
         if message_id is not None and message_id in self.messages_id_list:
@@ -107,15 +115,18 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
 
         datestr = "%d.%m. %H:%M" if timestamp.astimezone(tz=None).date() < datetime.date.today() else "%H:%M"
         link = "https://plus.google.com/u/0/{}/about".format(user_id) if user_id else ""
-        message = ("<b>{}{}:</b><br>\n{}<br>\n").format(
+        message = ("""<div class="message"><b>{}{}:</b><br>\n{}<br>\n</div>\n""").format(
             timestamp.astimezone(tz=None).strftime(datestr),
             """ | <a href="{}">{}</a>""".format(link, username) if username is not None else "",
             text
         )
         doc = self.messagesWebView.page().mainFrame().documentElement()
-        doc.findFirst("div[id=messages]").appendInside(
-            """<div class="message">{}</div>""".format(message)
-        )
+        div = doc.findFirst("div[id=messages]")
+
+        if prepend:
+            div.prependInside(message)
+        else:
+            div.appendInside(message)
 
     def is_current(self):
         """Is this conversation in current tab?"""
@@ -139,27 +150,69 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         self.set_title()
         self.messageTextEdit.setFocus()
 
+    @asyncio.coroutine
+    def load_events(self):
+        """Load more events for this conversation (coroutine)"""
+        # Don't try to load while we're already loading.
+        if not self.is_loading and not self.first_loaded:
+            print('load_events')
+
+            self.is_loading = True
+
+            try:
+                conv_events = yield from self.conv.get_events(self.conv.events[0].id_)
+            except (IndexError, hangups.NetworkError):
+                conv_events = []
+
+            if conv_events:
+                self.scroll_prev_height = self.messagesWebView.page().mainFrame().contentsSize().height()
+            else:
+                self.first_loaded = True
+
+            for event in reversed(conv_events):
+                self.on_event(event, set_title=False, set_unread=False, prepend=True)
+
+            self.is_loading = False
+
+    def scroll_messages(self, position=None):
+        """Scroll list of messages to given position (or to the bottom if not specified)"""
+        frame = self.messagesWebView.page().mainFrame()
+
+        if position is None:
+            position = frame.scrollBarMaximum(QtCore.Qt.Vertical)
+
+        frame.setScrollPosition(QtCore.QPoint(0, position))
+
+    def on_scroll_requested(self, dx, dy, rect_to_scroll):
+        """User has scrolled in messagesWebView (callback)"""
+        frame = self.messagesWebView.page().mainFrame()
+        if frame.scrollPosition().y() == frame.scrollBarMinimum(QtCore.Qt.Vertical):
+            future = asyncio.async(self.load_events())
+            future.add_done_callback(lambda future: future.result())
+
     def on_contents_size_changed(self, size):
         """Size of contents in messagesWebView changed (callback)"""
         page = self.messagesWebView.page()
         viewport_height = page.viewportSize().height()
+        contents_height = page.mainFrame().contentsSize().height()
         scroll_position = page.mainFrame().scrollPosition().y()
 
         # Compute max. scroll position manually, because
         # scrollBarMaximum(QtCore.Qt.Vertical) doesn't work here
-        scroll_max = page.mainFrame().contentsSize().height() - viewport_height
+        scroll_max = contents_height - viewport_height
 
-        # If user has scrolled more than half of viewport away, don't scroll down automatically
-        if scroll_position < (scroll_max - 0.5 * viewport_height):
+        if self.scroll_prev_height:
+            # Scroll to previous position if more messages has been loaded
+            position = contents_height - self.scroll_prev_height
+            self.scroll_prev_height = None
+        elif scroll_position > (scroll_max - 0.5 * viewport_height):
+            # Scroll to end if user hasn't scrolled more than half of viewport away
+            position = None
+        else:
             return
 
         # Use singl-shot timer, because scrolling doesn't work here (maybe some Qt bug?)
-        QtCore.QTimer.singleShot(0, self.on_contents_size_changed_timeout)
-
-    def on_contents_size_changed_timeout(self):
-        """Scroll to the bottom after timeout of single-shot timer (callback)"""
-        frame = self.messagesWebView.page().mainFrame()
-        frame.setScrollPosition(QtCore.QPoint(0, frame.scrollBarMaximum(QtCore.Qt.Vertical)))
+        QtCore.QTimer.singleShot(0, lambda: self.scroll_messages(position))
 
     def on_link_clicked(self, url):
         """Open links in external web browser (callback)"""
@@ -209,47 +262,49 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         """Update unread count after receiving watermark notification (callback)"""
         self.set_title()
 
-    def on_event(self, conv_event, set_title=True, set_unread=True):
+    def on_event(self, conv_event, set_title=True, set_unread=True, prepend=False):
         """Hangups event received (callback)"""
         user = self.conv.get_user(conv_event.user_id)
 
         if isinstance(conv_event, hangups.ChatMessageEvent):
-            self.handle_message(conv_event, user, set_unread=set_unread)
+            self.handle_message(conv_event, user, set_unread=set_unread, prepend=prepend)
         elif isinstance(conv_event, hangups.RenameEvent):
-            self.handle_rename(conv_event, user)
+            self.handle_rename(conv_event, user, prepend=prepend)
         elif isinstance(conv_event, hangups.MembershipChangeEvent):
-            self.handle_membership_change(conv_event, user)
+            self.handle_membership_change(conv_event, user, prepend=prepend)
 
         # Update the title in case unread count or conversation name changed.
         if set_title:
             self.set_title()
 
-    def handle_message(self, conv_event, user, set_unread=True):
+    def handle_message(self, conv_event, user, set_unread=True, prepend=False):
         """Handle received chat message"""
         self.add_message(conv_event.timestamp, message_to_html(conv_event),
-                         user.full_name, user.id_.chat_id, conv_event.id_)
+                         user.full_name, user.id_.chat_id, conv_event.id_,
+                         prepend=prepend)
         # Update the count of unread messages.
         if not user.is_self and set_unread and not self.is_current():
             self.num_unread_local += 1
 
-    def handle_rename(self, conv_event, user):
+    def handle_rename(self, conv_event, user, prepend=False):
         """Handle received rename event"""
         if conv_event.new_name == '':
             text = '<i>*** cleared the conversation name ***</i>'
         else:
             text = '<i>*** renamed the conversation to {} ***</i>'.format(conv_event.new_name)
-        self.add_message(conv_event.timestamp, text, user.full_name, user.id_.chat_id, conv_event.id_)
+        self.add_message(conv_event.timestamp, text, user.full_name, user.id_.chat_id, conv_event.id_,
+                         prepend=prepend)
 
-    def handle_membership_change(self, conv_event, user):
+    def handle_membership_change(self, conv_event, user, prepend=False):
         """Handle received membership change event"""
         event_users = [self.conv.get_user(user_id) for user_id in conv_event.participant_ids]
         names = ', '.join(user.full_name for user in event_users)
-        if conv_event.type_ == hangups.MembershipChangeType.JOIN:
+        if conv_event.type_ == hangups.MEMBERSHIP_CHANGE_TYPE_JOIN:
             self.add_message(conv_event.timestamp,
                              '<i>*** added {} to the conversation ***</i>'.format(names),
-                             user.full_name, user.id_.chat_id, conv_event.id_)
+                             user.full_name, user.id_.chat_id, conv_event.id_, prepend=prepend)
         else:
             for name in names:
                 self.add_message(conv_event.timestamp,
                                  '<i>*** left the conversation ***</i>',
-                                 user.full_name, user.id_.chat_id, conv_event.id_)
+                                 user.full_name, user.id_.chat_id, conv_event.id_, prepend=prepend)
