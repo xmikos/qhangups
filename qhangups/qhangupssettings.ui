@@ -21,7 +21,14 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="2">
+   <item row="3" column="0" colspan="3">
+    <widget class="QCheckBox" name="connectionEventsCheckBox">
+     <property name="text">
+      <string>Connection events in feed</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -31,7 +38,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Language:</string>
@@ -45,7 +52,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
+   <item row="5" column="2">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -58,20 +65,20 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="languageComboBox"/>
-   </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QCheckBox" name="connectionEventsCheckBox">
-     <property name="text">
-      <string>Connection events in feed</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0" colspan="3">
     <widget class="QCheckBox" name="enterSendMessageCheckBox">
      <property name="text">
       <string>Press Enter to send message (default is Ctrl+Enter)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="languageComboBox"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QCheckBox" name="autoConnectCheckBox">
+     <property name="text">
+      <string>Auto-connect</string>
      </property>
     </widget>
    </item>
