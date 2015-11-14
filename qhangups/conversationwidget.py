@@ -23,8 +23,12 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         self.first_loaded = False
         self.scroll_prev_height = None
 
-        self.client.on_disconnect.add_observer(self.on_disconnect)
-        self.client.on_reconnect.add_observer(self.on_reconnect)
+        settings = QtCore.QSettings()
+
+        if settings.value("connection_events", True, type=bool):
+            self.client.on_disconnect.add_observer(self.on_disconnect)
+            self.client.on_reconnect.add_observer(self.on_reconnect)
+
         self.conv.on_event.add_observer(self.on_event)
         self.conv.on_watermark_notification.add_observer(self.on_watermark_notification)
 
@@ -34,7 +38,6 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         self.messagesWebView.page().linkClicked.connect(self.on_link_clicked)
         self.messagesWebView.page().scrollRequested.connect(self.on_scroll_requested)
 
-        settings = QtCore.QSettings()
         self.enter_send_message = settings.value("enter_send_message", False, type=bool)
 
         # Install ourselves as event filter so we can catch Enter key press (see eventFilter method)
