@@ -1,7 +1,18 @@
 #!/usr/bin/env python
 
+import sys
+
 from setuptools import setup
 from qhangups.version import __version__
+
+install_requires = [
+    "hangups>=0.3.0",
+    "appdirs",
+    "Quamash"
+]
+
+if sys.version_info < (3, 4):
+    install_requires.append("asyncio")
 
 setup(
     name="QHangups",
@@ -30,12 +41,7 @@ setup(
             "qhangups=qhangups.__main__:main"
         ],
     },
-    install_requires=[
-        "hangups>=0.2.8",
-        "appdirs",
-        "Quamash",
-        "asyncio"  # Only needed for backward compatibility with Python 3.3
-    ],
+    install_requires=install_requires,
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: MacOS X",
@@ -48,6 +54,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Communications :: Chat"
     ]
 )
