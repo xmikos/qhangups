@@ -19,6 +19,8 @@ class QHangupsSettings(QtWidgets.QDialog, Ui_QHangupsSettings):
         self.sendClientActiveCheckBox.setChecked(settings.value("send_client_active", True, type=bool))
         self.sendReadStateCheckBox.setChecked(settings.value("send_read_state", True, type=bool))
         self.enterSendMessageCheckBox.setChecked(settings.value("enter_send_message", False, type=bool))
+        self.connectionEventsCheckBox.setChecked(settings.value("connection_events", True, type=bool))
+        self.autoConnectCheckBox.setChecked(settings.value("autoconnect", False, type=bool))
 
         lang_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "languages")
 
@@ -47,4 +49,6 @@ class QHangupsSettings(QtWidgets.QDialog, Ui_QHangupsSettings):
         settings.setValue("send_read_state", self.sendReadStateCheckBox.isChecked())
         settings.setValue("enter_send_message", self.enterSendMessageCheckBox.isChecked())
         settings.setValue("language", self.languageComboBox.itemData(self.languageComboBox.currentIndex()))
+        settings.setValue("connection_events", self.connectionEventsCheckBox.isChecked())
+        settings.setValue("autoconnect", self.autoConnectCheckBox.isChecked())
         QtWidgets.QDialog.accept(self)

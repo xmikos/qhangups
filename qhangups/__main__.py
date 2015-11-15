@@ -75,6 +75,11 @@ class QHangupsMainWidget(QtWidgets.QWidget):
         except NotImplementedError:
             pass
 
+        settings = QtCore.QSettings()
+
+        if settings.value("autoconnect", False, type=bool):
+            self.hangups_start()
+
     def create_actions(self):
         """Create actions and connect relevant signals"""
         self.startAction = QtWidgets.QAction(self)
