@@ -23,14 +23,35 @@
       <bool>false</bool>
      </property>
      <widget class="QWebView" name="messagesWebView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>99</verstretch>
+       </sizepolicy>
+      </property>
       <property name="url">
        <url>
         <string>about:blank</string>
        </url>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QPlainTextEdit" name="messageTextEdit">
          <property name="sizePolicy">
