@@ -107,14 +107,18 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
                 <meta charset="utf-8">
                 <title>Messages</title>
                 <style>
-                    html { font-family: sans-serif; font-size: 10pt; }
-                    div.message { margin-bottom: 1em; }
+                    html {{ font-family: sans-serif; font-size: 10pt; color : {0}; }}
+                    a:link {{ font-family: sans-serif; font-size: 10pt; color : {1}; }}
+                    div.message {{ margin-bottom: 1em; }}
                 </style>
             </head>
             <body>
                 <div id="messages"></div>
             </body>
-            </html>"""
+            </html>""".format(
+                self.messagesWebView.palette().text().color().name(),
+                self.messagesWebView.palette().link().color().name()
+                )
         )
 
     def add_message(self, timestamp, text, username=None, user_id=None, message_id=None, prepend=False):
