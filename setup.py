@@ -6,7 +6,7 @@ from setuptools import setup
 from qhangups.version import __version__
 
 install_requires = [
-    "hangups>=0.3.0",
+    "hangups>=0.4.1",
     "appdirs",
     "Quamash"
 ]
