@@ -94,6 +94,7 @@
  <tabstops>
   <tabstop>messageTextEdit</tabstop>
   <tabstop>sendButton</tabstop>
+  <tabstop>messagesWebView</tabstop>
  </tabstops>
  <resources/>
  <connections/>
