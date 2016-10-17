@@ -19,12 +19,9 @@ Usage
 Run ``qhangups --help`` to see all available options.
 Start QHangups by running ``qhangups``.
 
-The first time you start QHangups, you will be presented with simple web
-browser window where you log into your Google account. After logging in and
-clicking on "SIGN IN", you should see authorization code. Copy this code
-to clipboard, close browser window and paste this code into authorization form.
-Your credentials will only be sent to Google, and only OAuth 2 refresh token
-will be stored locally.
+The first time you start QHangups, you will be prompted to log into your
+Google account. Your credentials will only be sent to Google, and only
+OAuth 2 refresh token will be stored locally.
 
 Help
 ----

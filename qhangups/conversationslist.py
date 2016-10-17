@@ -1,9 +1,13 @@
+import logging
+
 from PyQt5 import QtCore, QtWidgets
 
 import hangups
 from hangups.ui.utils import get_conv_name
 
 from qhangups.ui_qhangupsconversationslist import Ui_QHangupsConversationsList
+
+logger = logging.getLogger(__name__)
 
 
 class QHangupsConversationsList(QtWidgets.QMainWindow, Ui_QHangupsConversationsList):

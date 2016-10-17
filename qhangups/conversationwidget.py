@@ -1,4 +1,4 @@
-import datetime, asyncio
+import datetime, asyncio, logging
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebKitWidgets
 
@@ -7,6 +7,8 @@ from hangups.ui.utils import get_conv_name
 
 from qhangups.utils import text_to_segments, message_to_html
 from qhangups.ui_qhangupsconversationwidget import Ui_QHangupsConversationWidget
+
+logger = logging.getLogger(__name__)
 
 
 class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidget):
@@ -171,7 +173,7 @@ class QHangupsConversationWidget(QtWidgets.QWidget, Ui_QHangupsConversationWidge
         """Load more events for this conversation (coroutine)"""
         # Don't try to load while we're already loading.
         if not self.is_loading and not self.first_loaded:
-            print('load_events')
+            logger.debug('Loading more conversation events')
 
             self.is_loading = True
 

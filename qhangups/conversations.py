@@ -1,7 +1,11 @@
+import logging
+
 from PyQt5 import QtCore, QtWidgets
 
 from qhangups.conversationwidget import QHangupsConversationWidget
 from qhangups.ui_qhangupsconversations import Ui_QHangupsConversations
+
+logger = logging.getLogger(__name__)
 
 
 class QHangupsConversations(QtWidgets.QMainWindow, Ui_QHangupsConversations):

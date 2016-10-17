@@ -1,6 +1,10 @@
+import logging
+
 from PyQt5 import QtCore, QtWidgets
 
 from qhangups.ui_qhangupsbrowser import Ui_QHangupsBrowser
+
+logger = logging.getLogger(__name__)
 
 
 class QHangupsBrowser(QtWidgets.QDialog, Ui_QHangupsBrowser):

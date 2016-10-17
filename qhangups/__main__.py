@@ -26,12 +26,43 @@ from qhangups.conversationslist import QHangupsConversationsList
 from qhangups.browser import QHangupsBrowser
 
 
-# Basic settings
+# Logging settings
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logger = logging.getLogger(__name__)
 
 # Prepare Qt translators
 translator = QtCore.QTranslator()
 qt_translator = QtCore.QTranslator()
+
+
+class CredentialsPrompt(QtCore.QObject):
+    """Callbacks for prompting user for their Google account credentials."""
+    def __init__(self, parent):
+        super().__init__(parent) 
+
+    def get_email(self):
+        """Return Google account email address."""
+        email, ok = QtWidgets.QInputDialog.getText(
+            self.parent(), self.tr("QHangups - Email"), self.tr("Email:"),
+            QtWidgets.QLineEdit.Normal
+        )
+        return email if ok else ''
+
+    def get_password(self):
+        """Return Google account password."""
+        password, ok = QtWidgets.QInputDialog.getText(
+            self.parent(), self.tr("QHangups - Password"), self.tr("Password:"),
+            QtWidgets.QLineEdit.Password
+        )
+        return password if ok else ''
+
+    def get_verification_code(self):
+        """Return Google account verification code."""
+        verification_code, ok = QtWidgets.QInputDialog.getText(
+            self.parent(), self.tr("QHangups - Verification code"), self.tr("Verification code:"),
+            QtWidgets.QLineEdit.Normal
+        )
+        return verification_code if ok else ''
 
 
 class QHangupsMainWidget(QtWidgets.QWidget):
@@ -130,7 +161,8 @@ class QHangupsMainWidget(QtWidgets.QWidget):
     def login(self, refresh_token_path):
         """Login to Google account"""
         try:
-            cookies = hangups.auth.get_auth(self.get_credentials, refresh_token_path)
+            refresh_token_cache = hangups.auth.RefreshTokenCache(refresh_token_path)
+            cookies = hangups.auth.get_auth(CredentialsPrompt(self), refresh_token_cache)
             return cookies
         except hangups.GoogleAuthError:
             QtWidgets.QMessageBox.warning(self, self.tr("QHangups - Warning"),
@@ -267,7 +299,7 @@ class QHangupsMainWidget(QtWidgets.QWidget):
     def changeEvent(self, event):
         """Handle LanguageChange event"""
         if (event.type() == QtCore.QEvent.LanguageChange):
-            print("Language changed")
+            logger.debug("Language changed")
             self.retranslateUi()
 
         super().changeEvent(event)
@@ -283,7 +315,7 @@ class QHangupsMainWidget(QtWidgets.QWidget):
     @asyncio.coroutine
     def on_connect(self):
         """Handle connecting for the first time (callback)"""
-        print('Connected')
+        logger.debug('Connected')
 
         self.user_list, self.conv_list = (
             yield from hangups.build_user_conversation_list(self.client)

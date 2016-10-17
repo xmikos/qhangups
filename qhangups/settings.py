@@ -1,8 +1,10 @@
-import os, glob
+import os, glob, logging
 
 from PyQt5 import QtCore, QtWidgets
 
 from qhangups.ui_qhangupssettings import Ui_QHangupsSettings
+
+logger = logging.getLogger(__name__)
 
 
 class QHangupsSettings(QtWidgets.QDialog, Ui_QHangupsSettings):
